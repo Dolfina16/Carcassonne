@@ -7,11 +7,11 @@ public class Ciudad {
     private int perdida;
     private int superavit;
     
-    public Ciudad(int id, int ganancia, int perdida, int superavit){
+    public Ciudad(int id){
         this.id = id;
-        this.ganancia = ganancia;
-        this.perdida = perdida;
-        this.superavit = superavit;
+        this.ganancia = 0;
+        this.perdida = 0;
+        this.superavit = 0;
     }
 
     public int id(){
