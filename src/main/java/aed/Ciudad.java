@@ -32,13 +32,15 @@ public class Ciudad {
 
     public void incr_ganancia(int valor){
         ganancia += valor;
+        actualizar_superavit();
     }
 
     public void incr_perdida(int valor){
         perdida += valor;
+        actualizar_superavit();
     }
 
-    public void actualizar_superavit(int gana, int pierde){
-        superavit += gana - pierde;
+    public void actualizar_superavit(){
+        superavit = ganancia - perdida;
     }
 }

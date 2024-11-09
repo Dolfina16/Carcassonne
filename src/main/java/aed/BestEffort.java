@@ -1,6 +1,7 @@
 package aed;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 //q onda el tamaño del conjunto de traslados, una vez q despacho tengo que achicar el conjunto o puedo dejarlo en blanco?
 
@@ -15,6 +16,10 @@ public class BestEffort {
     private Heap<Traslado> trasladosAnti;
     //ArrayList<(trasladoR,trasladoA)> refes;
 
+    Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
+    Comparator<Traslado> AntiguedadComparator = Comparator.comparing(Traslado::timestamp);
+    Comparator<Traslado> RentabilidadComparator = Comparator.comparing(Traslado::gananciaNeta);
+
     private void agrandar(ArrayList<Tupla> arreglo, int n){
         ArrayList<Tupla> nuevoArreglo = new ArrayList<Tupla>(n);
         for (int j = 0; j < arreglo.size(); j++) {
@@ -23,7 +28,7 @@ public class BestEffort {
     }
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        ciudades = new Heap<Ciudad>(cantCiudades); // O(C)
+        //ciudades = new Heap<Ciudad>(cantCiudades); // O(C)
         //trasladosRedi <-- heapify(traslados, redituabilidad) // O(T)
         //
         //trasladosAnti <-- heapify(traslados, antiguedad) // O(T)
