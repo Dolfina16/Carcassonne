@@ -52,7 +52,7 @@ public class BestEffort {
     }
 
     public int[] despacharMasAntiguos(int n){
-        // Implementar
+        // Impleme
         return null;
     }
 
