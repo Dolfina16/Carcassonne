@@ -7,8 +7,8 @@ import java.util.Comparator;
 
 public class BestEffort {
     //Completar atributos privados
-    private int[] mayorGanancia;
-    private int[] mayorPerdida;
+    private ArrayList<Integer> mayorGanancia;
+    private ArrayList<Integer> mayorPerdida;
     private int sumaGanancias;
     private int trasladosDespachados;
     private Heap<Ciudad> ciudades;
@@ -43,11 +43,11 @@ public class BestEffort {
     }
 
     public int[] despacharMasRedituables(int n){
-        for(int i=0; i< Math.min(n,trasladosAnti.size()); i++){
-            //idTraslado <- trasladosRedi.sacarMaximo //O(log(T))
-            //(Ir,Ia) <- refes.obtener(idTraslado)
-            //traslad
-        }
+        // for(int i=0; i< Math.min(n,trasladosAnti); i++){
+        //     //idTraslado <- trasladosRedi.sacarMaximo //O(log(T))
+        //     //(Ir,Ia) <- refes.obtener(idTraslado)
+        //     //traslad
+        // }
         return null;
     }
 
