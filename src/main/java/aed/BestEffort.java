@@ -72,7 +72,7 @@ public class BestEffort {
     }
 
     public int gananciaPromedioPorTraslado(){
-        // Implementar
+        // escribir
         return sumaGanancias/trasladosDespachados;
     }
     
