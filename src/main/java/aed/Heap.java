@@ -29,19 +29,18 @@ public T maximus(){
     return elementos.getFirst();
 }
 
-public T sacarMaximo(){
+public T sacar(int pos){
     T hashirama;
     if (tamaño == 0) {
         return null;
     }else if (tamaño < 3) {
-        hashirama = elementos.removeFirst();
+        hashirama = elementos.remove(pos);
         tamaño--;
         return hashirama;
     }else{
         tamaño--;
-        hashirama = elementos.getFirst();
-        elementos.set(0, elementos.removeLast());
-        int pos = 0;
+        hashirama = elementos.get(pos);
+        elementos.set(pos, elementos.removeLast());
         while (pos <= (Math.pow(2, Math.floor(log2(tamaño))) - 2)) {
             if ((2*pos)+2 < tamaño) {
                 T elemMovedizo = elementos.get(pos);
@@ -91,11 +90,18 @@ public void heapify(){
     if (tamaño > 2 && pos > 1){
         while(pos > 0){
             int indice = pos;
+            int indiceDelQueCambio;
             if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
-                siftDown(new int[]{(pos-1)/2,pos-1,pos});
+                indiceDelQueCambio = siftDown(new int[]{(pos-1)/2,pos-1,pos});
+                if (indiceDelQueCambio != (pos-1)/2) {
+                    indice = indiceDelQueCambio;
+                }
                 pos -= 2;
             }else{
-                siftDown(new int[]{(pos-1)/2,pos});
+                indiceDelQueCambio = siftDown(new int[]{(pos-1)/2,pos});
+                if (indiceDelQueCambio != (pos-1)/2) {
+                    indice = indiceDelQueCambio;
+                }
                 pos -=1;
             }
             while((indice*2 + 1) < tamaño && !esHeap(new int[]{indice,indice*2 + 1,indice*2 + 2})){
@@ -179,15 +185,15 @@ public static void main(String[] args) {
     // System.out.println(heap.sacarMaximo());
     //heap.Anhadir(gotica);
 
-    Random rand = new Random();
+    // Random rand = new Random();
     // Generate random integers in range 0 to 100 rand.nextInt(101)
-    Ciudad[] ciudades = new Ciudad[25];
+    Ciudad[] ciudades = new Ciudad[8];
     for (int i = 0; i < ciudades.length; i++) {
         ciudades[i] = new Ciudad(i);
         ciudades[i].incr_ganancia(i + 1);
     }
     Heap<Ciudad> heap2 = new Heap<Ciudad>(ciudades, SuperavitComparator);
-    System.out.println(heap2.toString());
+    System.out.println(heap2.sacar(3));
 }
 
 }
