@@ -2,6 +2,7 @@ package aed;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
 
 public class Heap <T> {
     private ArrayList<T> elementos;
@@ -15,7 +16,7 @@ public Heap(T[] arreglo, Comparator<T> comparador){
         tamaño += 1;
     }
     this.comparador = comparador;
-    heapify(tamaño-1);
+    heapify();
 }
 
 public static int log2(int N){
@@ -48,29 +49,18 @@ public T sacarMaximo(){
                 if (elementos.get(pos).equals(elemMovedizo)) {
                     //no me movi
                     pos = tamaño;
-                }else if (elementos.get((2*pos)+1).equals(elemMovedizo)) {
-                    //me fui al hijo izq
-                    pos = (2*pos)+1;
                 }else{
-                    //me fui al hijo der
-                    pos = (2*pos)+2;
+                    pos = elementos.get((2*pos)+1).equals(elemMovedizo) ? (2*pos)+1 : (2*pos)+2;
                 }
             } else if ((2*pos)+1 < tamaño) {
                 T elemMovedizo = elementos.get(pos);
                 siftDown(new int[]{pos,(2*pos)+1});
-                if (elementos.get(pos).equals(elemMovedizo)) {
-                    //no me movi
-                    pos = tamaño;
-                }else{
-                    //me fui al hijo
-                    pos = (2*pos)+1;
-                }
+                pos = elementos.get(pos).equals(elemMovedizo) ? tamaño : (2*pos)+1;
             } else {
                 pos = tamaño;
             }
         }
     }
-
     return hashirama;
 }
 
@@ -88,20 +78,54 @@ public void Anhadir(T nuevo){
     }
 }
 
+public boolean esHeap(int[] heap){
+    if(heap[2] >= tamaño){
+        return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) > 0;
+    }else{
+        return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) > 0 && comparador.compare(elementos.get(heap[0]), elementos.get(heap[2])) > 0;
+    }
+}
 
-public void heapify(int pos){
-    if(tamaño > 2 && pos>1){
-        if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
-            siftDown(new int[]{(pos-1)/2,pos-1,pos});
-            heapify(pos-=2);
-        }else{
-            siftDown(new int[]{(pos-1)/2,pos});
-            heapify(pos-=1);
+public void heapify(){
+    int pos = tamaño - 1;
+    if (tamaño > 2 && pos > 1){
+        while(pos > 0){
+            int indice = pos;
+            if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
+                siftDown(new int[]{(pos-1)/2,pos-1,pos});
+                pos -= 2;
+            }else{
+                siftDown(new int[]{(pos-1)/2,pos});
+                pos -=1;
+            }
+            while((indice*2 + 1) < tamaño && !esHeap(new int[]{indice,indice*2 + 1,indice*2 + 2})){
+                if(indice*2 + 2 < tamaño){
+                    indice = siftDown(new int[]{indice,indice*2 + 1,indice*2 + 2});
+                }else{
+                    indice = siftDown(new int[]{indice,indice*2 + 1});
+                }
+            }
         }
     }else if(tamaño == 2){
         siftDown(new int[]{0,1});
     }
 }
+
+// public void heapify(int pos){
+//     if(tamaño > 2 && pos>1){
+//         if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
+//             while(comparador.compare(elementos.get((pos-1)/2), elementos.get(pos)) < 0 || comparador.compare(elementos.get((pos-1)/2), elementos.get(pos-1)) < 0 && (2*pos + 1) < tamaño){
+//                 pos = siftDown(new int[]{(pos-1)/2,pos-1,pos});
+//             }
+//             heapify(pos-=2);
+//         }else{
+//             siftDown(new int[]{(pos-1)/2,pos});
+//             heapify(pos-=1);
+//         }
+//     }else if(tamaño == 2){
+//         siftDown(new int[]{0,1});
+//     }
+// }
 
 public void siftUp(int[] elems){
     T vader = elementos.get(elems[0]);
@@ -113,36 +137,57 @@ public void siftUp(int[] elems){
     }
 }
 
-public void siftDown(int[] elems){
+public int siftDown(int[] elems){
     T padre = elementos.get(elems[0]);
     if(elems.length == 2){
             if(comparador.compare(padre, elementos.get(elems[1])) < 0){
                 elementos.set(elems[0], elementos.get(elems[1]));
                 elementos.set(elems[1], padre);
+                return elems[1];
             }
     }else if(elems.length == 3){
         int hijoMayor = comparador.compare(elementos.get(elems[1]), elementos.get(elems[2])) > 0 ? elems[1] : elems[2];
         if(comparador.compare(padre, elementos.get(hijoMayor)) < 0){
             elementos.set(elems[0], elementos.get(hijoMayor));
             elementos.set(hijoMayor, padre);
+            return hijoMayor;
         }
     }
+    return elems[0];
+}
+
+public String toString(){
+    String res = "[";
+    for (T t : elementos) {
+        res += t.toString() + ",";
+    }
+    return res + "]";
 }
 
 
 public static void main(String[] args) {
     Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
-    Ciudad ciudad0 = new Ciudad(0);
-    Ciudad ciudad1 = new Ciudad(1);
-    Ciudad ciudad2 = new Ciudad(2);
-    ciudad0.incr_ganancia(200); //200 super
-    ciudad1.incr_ganancia(10); //10 super
-    ciudad2.incr_perdida(400); //-400 super
-    Heap<Ciudad> heap = new Heap<Ciudad>(new Ciudad[]{ciudad2,ciudad1,ciudad0}, SuperavitComparator);
-    Ciudad gotica = new Ciudad(3);
-    gotica.incr_perdida(-3000);
+    //Ciudad ciudad0 = new Ciudad(0);
+    //Ciudad ciudad1 = new Ciudad(1);
+    //Ciudad ciudad2 = new Ciudad(2);
+    //ciudad0.incr_ganancia(200); //200 super
+    //ciudad1.incr_ganancia(10); //10 super
+    //ciudad2.incr_perdida(400); //-400 super
+    //Heap<Ciudad> heap = new Heap<Ciudad>(new Ciudad[]{ciudad2,ciudad1,ciudad0}, SuperavitComparator);
+    //Ciudad gotica = new Ciudad(3);
+    //gotica.incr_perdida(-3000);
     // System.out.println(heap.sacarMaximo());
-    heap.Anhadir(gotica);
+    //heap.Anhadir(gotica);
+
+    Random rand = new Random();
+    // Generate random integers in range 0 to 100 rand.nextInt(101)
+    Ciudad[] ciudades = new Ciudad[25];
+    for (int i = 0; i < ciudades.length; i++) {
+        ciudades[i] = new Ciudad(i);
+        ciudades[i].incr_ganancia(i + 1);
+    }
+    Heap<Ciudad> heap2 = new Heap<Ciudad>(ciudades, SuperavitComparator);
+    System.out.println(heap2.toString());
 }
 
 }

@@ -43,4 +43,9 @@ public class Ciudad {
     public void actualizar_superavit(){
         superavit = ganancia - perdida;
     }
+
+    @Override
+    public String toString(){
+        return "" + superavit;
+    }
 }
