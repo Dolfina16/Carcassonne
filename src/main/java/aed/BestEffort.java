@@ -27,12 +27,22 @@ public class BestEffort {
 		}
     }
 
-    public BestEffort(int cantCiudades, Traslado[] traslados){
-        //ciudades = new Heap<Ciudad>(cantCiudades); // O(C)
-        //trasladosRedi <-- heapify(traslados, redituabilidad) // O(T)
-        //
-        //trasladosAnti <-- heapify(traslados, antiguedad) // O(T)
+    private Ciudad[] crearCities(int canti){
+        Ciudad[] arregloCities = new Ciudad[canti];
+        for (int i = 0; i < arregloCities.length; i++) {
+            arregloCities[i] = new Ciudad(i);
+        }
+        return arregloCities;
     }
+
+    private void asignarRefe()
+
+    public BestEffort(int cantCiudades, Traslado[] traslados){
+        Ciudad[] lasCities = crearCities(cantCiudades); //O(C)
+        ciudades = new Heap<Ciudad>(lasCities, SuperavitComparator); //O(C)
+        trasladosRedi = new Heap<Traslado>(traslados, RentabilidadComparator); //O(T)
+        trasladosAnti = new Heap<Traslado>(traslados, AntiguedadComparator); //O(T)
+    } //O(C+T)
 
     public void registrarTraslados(Traslado[] traslados){
         for(int i=0; i< traslados.length; i++){
