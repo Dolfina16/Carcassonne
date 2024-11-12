@@ -111,22 +111,6 @@ public void heapify(){
     }
 }
 
-// public void heapify(int pos){
-//     if(tamaño > 2 && pos>1){
-//         if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
-//             while(comparador.compare(elementos.get((pos-1)/2), elementos.get(pos)) < 0 || comparador.compare(elementos.get((pos-1)/2), elementos.get(pos-1)) < 0 && (2*pos + 1) < tamaño){
-//                 pos = siftDown(new int[]{(pos-1)/2,pos-1,pos});
-//             }
-//             heapify(pos-=2);
-//         }else{
-//             siftDown(new int[]{(pos-1)/2,pos});
-//             heapify(pos-=1);
-//         }
-//     }else if(tamaño == 2){
-//         siftDown(new int[]{0,1});
-//     }
-// }
-
 public void siftUp(int[] elems){
     T vader = elementos.get(elems[0]);
     T luke = elementos.get(elems[1]);
