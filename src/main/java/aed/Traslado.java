@@ -7,7 +7,7 @@ public class Traslado {
     private int destino;
     private int gananciaNeta;
     private int timestamp;
-    private Tupla<Integer> refs = new Tupla(null, null);
+    private Tupla<Integer,Integer> refs = new Tupla(null, null);
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){
         this.id = id;
@@ -36,8 +36,10 @@ public class Traslado {
         return refs;
     }
 
-    public void set_refs(int red, int ant){
-        refs.set_first(red);
-        refs.set_second(ant);
+    public void set_refRed(int i){
+        refs.set_first(i);
+    }
+    public void set_refAnti(int i){
+        refs.set_second(i);
     }
 }

@@ -35,15 +35,24 @@ public class BestEffort {
         return arregloCities;
     }
 
-    private void asignarRefe(){
-
+    private void asignarRefes(){
+        int i = 0;
+        while(i < trasladosRedi.tamaño()){
+            trasladosRedi.get_elem(i).set_refRed(i);
+            i+=1;
+        }
+        while(i < trasladosRedi.tamaño()){
+            trasladosAnti.get_elem(i).set_refAnti(i);
+            i+=1;
+        }
     }
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        Ciudad[] lasCities = crearCities(cantCiudades); //O(C)
-        ciudades = new Heap<Ciudad>(lasCities, SuperavitComparator); //O(C)
-        trasladosRedi = new Heap<Traslado>(traslados, RentabilidadComparator); //O(T)
-        trasladosAnti = new Heap<Traslado>(traslados, AntiguedadComparator); //O(T)
+        Ciudad[] lasCities = crearCities(cantCiudades); //O(C) t(T,C)=C
+        ciudades = new Heap<Ciudad>(lasCities, SuperavitComparator); //O(C) t(T,C)=2C
+        trasladosRedi = new Heap<Traslado>(traslados, RentabilidadComparator); //O(T) t(T,C)=2C + T
+        trasladosAnti = new Heap<Traslado>(traslados, AntiguedadComparator); //O(T) t(T,C)=2C + 2T
+        asignarRefes(); // O(T) t(T,C)=2C + 4T
     } //O(C+T)
 
     public void registrarTraslados(Traslado[] traslados){
@@ -54,7 +63,7 @@ public class BestEffort {
         } //O[|traslados|.(3.log(T))]
     }
 
-    public int[] despacharMasRedituables(int n){
+    public int[] despacharMasRedituables(int n){ //O(n(log(T)+log(C))) 
         // for(int i=0; i< Math.min(n,trasladosAnti); i++){
         //     //idTraslado <- trasladosRedi.sacarMaximo //O(log(T))
         //     //(Ir,Ia) <- refes.obtener(idTraslado)
@@ -86,6 +95,13 @@ public class BestEffort {
     public int gananciaPromedioPorTraslado(){
         // escribir
         return sumaGanancias/trasladosDespachados;
+    }
+
+    public static void main(String[] args) {
+        Traslado t0 = new Traslado(0, 0, 0, 0, 10);
+        Traslado t1 = new Traslado(1, 0, 0, 2, 3);
+        Traslado t2 = new Traslado(2, 0, 0, 5, 0);
+        BestEffort best = new BestEffort(0, new Traslado[]{t0,t1,t2});
     }
     
 }

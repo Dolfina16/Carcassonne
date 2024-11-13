@@ -19,6 +19,14 @@ public Heap(T[] arreglo, Comparator<T> comparador){
     heapify();
 }
 
+public T get_elem(int indice){
+    return elementos.get(indice);
+}
+
+public int tamaño(){
+    return tamaño;
+}
+
 public static int log2(int N){
     int result = (int)(Math.log(N) / Math.log(2));
 
@@ -29,38 +37,47 @@ public T maximus(){
     return elementos.getFirst();
 }
 
-public T sacar(int pos){
+public ArrayList<Tupla<T,Integer>> sacar(int pos){
     T hashirama;
+    Tupla<T,Integer> tupla = new Tupla<T,Integer>(null, null);
+    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();
     if (tamaño == 0) {
         return null;
     }else if (tamaño < 3) {
         hashirama = elementos.remove(pos);
         tamaño--;
-        return hashirama;
+        tupla = new Tupla<T,Integer>(hashirama, null);
+        res.add(tupla);
+        if(tamaño == 2){
+            tupla = new Tupla<T,Integer>(elementos.get(0), 0);
+            res.add(tupla);
+        }
+        return res;
     }else{
         tamaño--;
         hashirama = elementos.get(pos);
+        tupla = new Tupla<T,Integer>(hashirama, null);
+        res.add(tupla);
         elementos.set(pos, elementos.removeLast());
         while (pos <= (Math.pow(2, Math.floor(log2(tamaño))) - 2)) {
             if ((2*pos)+2 < tamaño) {
-                T elemMovedizo = elementos.get(pos);
-                siftDown(new int[]{pos,(2*pos)+1,(2*pos)+2});
-                if (elementos.get(pos).equals(elemMovedizo)) {
-                    //no me movi
-                    pos = tamaño;
-                }else{
-                    pos = elementos.get((2*pos)+1).equals(elemMovedizo) ? (2*pos)+1 : (2*pos)+2;
-                }
+                int nueva_pos = siftDown(new int[]{pos,(2*pos)+1,(2*pos)+2});
+                tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+                res.add(tupla);
+                pos = nueva_pos == pos ? tamaño : nueva_pos;
             } else if ((2*pos)+1 < tamaño) {
-                T elemMovedizo = elementos.get(pos);
-                siftDown(new int[]{pos,(2*pos)+1});
-                pos = elementos.get(pos).equals(elemMovedizo) ? tamaño : (2*pos)+1;
+                int nueva_pos = siftDown(new int[]{pos,(2*pos)+1});
+                tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+                res.add(tupla);
+                pos = nueva_pos == pos ? tamaño : nueva_pos;
             } else {
+                tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+                res.add(tupla);
                 pos = tamaño;
             }
         }
     }
-    return hashirama;
+    return res;
 }
 
 public void Anhadir(T nuevo){
@@ -90,19 +107,15 @@ public void heapify(){
     if (tamaño > 2 && pos > 1){
         while(pos > 0){
             int indice = pos;
-            int indiceDelQueCambio;
             if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
-                indiceDelQueCambio = siftDown(new int[]{(pos-1)/2,pos-1,pos});
-                if (indiceDelQueCambio != (pos-1)/2) {
-                    indice = indiceDelQueCambio;
+                indice = siftDown(new int[]{(pos-1)/2,pos-1,pos});
+                if(indice == (pos-1)/2){
+                    indice = pos;
                 }
-                pos -= 2;
+                pos-=2;
             }else{
-                indiceDelQueCambio = siftDown(new int[]{(pos-1)/2,pos});
-                if (indiceDelQueCambio != (pos-1)/2) {
-                    indice = indiceDelQueCambio;
-                }
-                pos -=1;
+                siftDown(new int[]{(pos-1)/2,pos});
+                pos-=1;
             }
             while((indice*2 + 1) < tamaño && !esHeap(new int[]{indice,indice*2 + 1,indice*2 + 2})){
                 if(indice*2 + 2 < tamaño){
@@ -174,10 +187,9 @@ public static void main(String[] args) {
     Ciudad[] ciudades = new Ciudad[8];
     for (int i = 0; i < ciudades.length; i++) {
         ciudades[i] = new Ciudad(i);
-        ciudades[i].incr_ganancia(i + 1);
+        ciudades[i].incr_ganancia(i);
     }
     Heap<Ciudad> heap2 = new Heap<Ciudad>(ciudades, SuperavitComparator);
-    System.out.println(heap2.sacar(3));
+    System.out.println(heap2.sacar(0));
 }
-
 }

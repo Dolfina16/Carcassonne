@@ -1,10 +1,10 @@
 package aed;
 
-public class Tupla <T> {
+public class Tupla <T,Q> {
     private T first;
-    private T second;
+    private Q second;
 
-    public Tupla(T first, T second) {
+    public Tupla(T first, Q second) {
         this.first = first;
         this.second = second;
     }
@@ -13,7 +13,7 @@ public class Tupla <T> {
         return first;
     }
 
-    public T getSecond() {
+    public Q getSecond() {
         return second;
     }
 
@@ -21,7 +21,12 @@ public class Tupla <T> {
         first = value;
     }
 
-    public void set_second(T value){
+    public void set_second(Q value){
         second = value;
+    }
+
+    public void set_both(T value0, Q value1){
+        first = value0;
+        second = value1;
     }
 }
