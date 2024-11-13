@@ -11,14 +11,14 @@ public class BestEffort {
     private ArrayList<Integer> mayorPerdida;
     private int sumaGanancias;
     private int trasladosDespachados;
-    private Heap<Ciudad> ciudades;
+    private Heap<Ciudad> ciudadesSuper;
+    private Ciudad[] ciudadesPorId;
     private Heap<Traslado> trasladosRedi;
     private Heap<Traslado> trasladosAnti;
-    //ArrayList<(trasladoR,trasladoA)> refes;
 
     Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
     Comparator<Traslado> AntiguedadComparator = Comparator.comparing(Traslado::timestamp);
-    Comparator<Traslado> RentabilidadComparator = Comparator.comparing(Traslado::gananciaNeta);
+    Comparator<Traslado> RedituabilidadComparator = Comparator.comparing(Traslado::gananciaNeta);
 
     private void agrandar(ArrayList<Tupla> arreglo, int n){
         ArrayList<Tupla> nuevoArreglo = new ArrayList<Tupla>(n);
@@ -41,29 +41,77 @@ public class BestEffort {
             trasladosRedi.get_elem(i).set_refRed(i);
             i+=1;
         }
-        while(i < trasladosRedi.tamaño()){
+        while(i < trasladosAnti.tamaño()){
             trasladosAnti.get_elem(i).set_refAnti(i);
             i+=1;
         }
     }
 
+    private void cambiarRefes(ArrayList<Tupla<Traslado,Integer>> mutantes, int x){
+        for (Tupla<Traslado,Integer> mutante : mutantes) {
+            Traslado traslado = mutante.getFirst();
+            if (x == 0) {
+                traslado.set_refRed(mutante.getSecond());
+            }else{
+                traslado.set_refAnti(mutante.getSecond());
+            }
+        }
+    }
+
     public BestEffort(int cantCiudades, Traslado[] traslados){
         Ciudad[] lasCities = crearCities(cantCiudades); //O(C) t(T,C)=C
-        ciudades = new Heap<Ciudad>(lasCities, SuperavitComparator); //O(C) t(T,C)=2C
-        trasladosRedi = new Heap<Traslado>(traslados, RentabilidadComparator); //O(T) t(T,C)=2C + T
+        ciudadesSuper = new Heap<Ciudad>(lasCities, SuperavitComparator); //O(C) t(T,C)=2C
+        ciudadesPorId = new Ciudad[ciudadesSuper.tamaño()];
+        for (int i = 0; i < ciudadesSuper.tamaño(); i++) {
+            ciudadesPorId[ciudadesSuper.get_elem(i).id()] = ciudadesSuper.get_elem(i);
+        }
+
+        trasladosRedi = new Heap<Traslado>(traslados, RedituabilidadComparator); //O(T) t(T,C)=2C + T
         trasladosAnti = new Heap<Traslado>(traslados, AntiguedadComparator); //O(T) t(T,C)=2C + 2T
         asignarRefes(); // O(T) t(T,C)=2C + 4T
     } //O(C+T)
 
     public void registrarTraslados(Traslado[] traslados){
+        ArrayList<Tupla<Traslado,Integer>> mutantes;
         for(int i=0; i< traslados.length; i++){
-            //indiceRedi <- trasladosRedi.agregar(traslados[i]) //O(log(T))
-            //indiceAnti <- trasladosAnti.agregar(traslados[i]) //O(log(T))
-            //refes.set(traslados[i].id : (indiceRedi,indiceAnti)) //O(log(T))
-        } //O[|traslados|.(3.log(T))]
+            
+            mutantes = trasladosRedi.Anhadir(traslados[i]); //O(log T)
+            cambiarRefes(mutantes, 0); //O(log T)
+
+            mutantes = trasladosAnti.Anhadir(traslados[i]); //O(log T)
+            cambiarRefes(mutantes, 1); //O(log T)        
+        
+        } //O[|traslados|.(4.log(T))]
     }
 
-    public int[] despacharMasRedituables(int n){ //O(n(log(T)+log(C))) 
+    public int[] despacharMasRedituables(int n){ //O(n(log(T)+log(C)))
+        int cantDespachados = Math.min(n, trasladosRedi.tamaño());
+        int[] idsDespachados = new int[cantDespachados];
+        ArrayList<Tupla<Traslado,Integer>> mutantes;
+        Tupla<Traslado,Integer> primerMutante;
+        Traslado tConMasRedi;
+        for (int i = 0; i < cantDespachados; i++) {
+            mutantes = trasladosRedi.sacar(0);
+            primerMutante = mutantes.removeFirst();
+            tConMasRedi = primerMutante.getFirst();
+
+            idsDespachados[i] = (tConMasRedi.id());
+            sumaGanancias += tConMasRedi.gananciaNeta();
+            trasladosDespachados++;
+            ciudadesPorId[tConMasRedi.origen()].incr_ganancia(tConMasRedi.gananciaNeta());
+            ciudadesPorId[tConMasRedi.destino()].incr_perdida(tConMasRedi.gananciaNeta());
+
+            //ACA NOS CHOCAMOS CON LA REALIDAD DE QUE PROBABLEMTE TENGAMOS QUE TENER:
+            // - Una funcion reordenar que me actualice el heap de superavit
+            // - Una referencia al indice de la ciudad en el heap de superavit porque sino no se donde carancho esta
+            // PANIC
+            // PANIC
+            // PANIC
+            // PANIC
+            
+            cambiarRefes(mutantes, 0);
+        }
+
         // for(int i=0; i< Math.min(n,trasladosAnti); i++){
         //     //idTraslado <- trasladosRedi.sacarMaximo //O(log(T))
         //     //(Ir,Ia) <- refes.obtener(idTraslado)
