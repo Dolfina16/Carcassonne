@@ -27,12 +27,10 @@ public class BestEffort {
 		}
     }
 
-    private Ciudad[] crearCities(int canti){
-        Ciudad[] arregloCities = new Ciudad[canti];
-        for (int i = 0; i < arregloCities.length; i++) {
-            arregloCities[i] = new Ciudad(i);
+    private void crearCities(int n){
+        for (int i = 0; i < n; i++) {
+            ciudadesPorId[i] = new Ciudad(i);
         }
-        return arregloCities;
     }
 
     private void asignarRefes(){
@@ -59,12 +57,8 @@ public class BestEffort {
     }
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        Ciudad[] lasCities = crearCities(cantCiudades); //O(C) t(T,C)=C
-        ciudadesSuper = new Heap<Ciudad>(lasCities, SuperavitComparator); //O(C) t(T,C)=2C
-        ciudadesPorId = new Ciudad[ciudadesSuper.tamaño()];
-        for (int i = 0; i < ciudadesSuper.tamaño(); i++) {
-            ciudadesPorId[ciudadesSuper.get_elem(i).id()] = ciudadesSuper.get_elem(i);
-        }
+        crearCities(cantCiudades);//O(C) t(T,C)=C
+        ciudadesSuper = new Heap<Ciudad>(ciudadesPorId, SuperavitComparator); //O(C) t(T,C)=2C
 
         trasladosRedi = new Heap<Traslado>(traslados, RedituabilidadComparator); //O(T) t(T,C)=2C + T
         trasladosAnti = new Heap<Traslado>(traslados, AntiguedadComparator); //O(T) t(T,C)=2C + 2T
