@@ -107,29 +107,23 @@ public boolean esHeap(int[] heap){
 
 public void heapify(){
     int pos = tamaño - 1;
-    if (tamaño > 2 && pos > 1){
-        while(pos > 0){
-            int indice = pos;
-            if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
-                indice = siftDown(new int[]{(pos-1)/2,pos-1,pos});
-                if(indice == (pos-1)/2){
-                    indice = pos;
-                }
-                pos-=2;
-            }else{
-                siftDown(new int[]{(pos-1)/2,pos});
-                pos-=1;
-            }
+    if (tamaño > 2){
+        if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
+            siftDown(new int[]{(pos-1)/2,pos-1,pos});
+            pos-=2;
+        }else{
+            siftDown(new int[]{(pos-1)/2,pos,tamaño});
+            pos-=1;
+        }
+        while(pos > 0 && !esHeap(new int[]{(pos-1)/2,pos,pos-1})){
+            int indice = siftDown(new int[]{(pos-1)/2,pos,pos-1});
+            pos-=2;
             while((indice*2 + 1) < tamaño && !esHeap(new int[]{indice,indice*2 + 1,indice*2 + 2})){
-                if(indice*2 + 2 < tamaño){
-                    indice = siftDown(new int[]{indice,indice*2 + 1,indice*2 + 2});
-                }else{
-                    indice = siftDown(new int[]{indice,indice*2 + 1});
-                }
+                indice = siftDown(new int[]{indice,indice*2 + 1,indice*2 + 2});
             }
         }
     }else if(tamaño == 2){
-        siftDown(new int[]{0,1});
+        siftDown(new int[]{0,1,2});
     }
 }
 
@@ -148,13 +142,13 @@ public int siftUp(int[] elems){
 
 public int siftDown(int[] elems){
     T padre = elementos.get(elems[0]);
-    if(elems.length == 2){
+    if(elems[2] >= tamaño){
             if(comparador.compare(padre, elementos.get(elems[1])) < 0){
                 elementos.set(elems[0], elementos.get(elems[1]));
                 elementos.set(elems[1], padre);
                 return elems[1];
             }
-    }else if(elems.length == 3){
+    }else{
         int hijoMayor = comparador.compare(elementos.get(elems[1]), elementos.get(elems[2])) > 0 ? elems[1] : elems[2];
         if(comparador.compare(padre, elementos.get(hijoMayor)) < 0){
             elementos.set(elems[0], elementos.get(hijoMayor));
@@ -163,6 +157,30 @@ public int siftDown(int[] elems){
         }
     }
     return elems[0];
+}
+
+public ArrayList<Tupla<T,Integer>> reordenar(int id, int dir){
+    int pos = id;
+    Tupla<T,Integer> tupla;
+    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();
+    if(dir == 0){
+        while(pos > 0 && !esHeap(new int[]{(pos-1)/2, pos,tamaño})){
+            siftUp(new int[]{(pos-1)/2, pos});
+            tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+            res.add(tupla);
+            pos = (pos-1)/2;
+        }
+    }else{
+        while(pos*2+1 < tamaño && !esHeap(new int[]{pos, pos*2+1, pos*2+2})){
+            int i = siftDown(new int[]{pos, pos*2+1, pos*2+2});
+            tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+            res.add(tupla);
+            pos = i;
+        }
+    }
+    tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+    res.add(tupla);
+    return res;
 }
 
 public String toString(){
@@ -201,5 +219,8 @@ public static void main(String[] args) {
     Ciudad city = new Ciudad(8);
     city.incr_ganancia(10);
     heap2.Anhadir(city);
+    city.incr_perdida(11);
+    city.set_ref(0);
+    heap2.reordenar(city.ref(), -1);
 }
 }

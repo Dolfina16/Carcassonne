@@ -32,7 +32,7 @@ public class Traslado {
     public int timestamp(){
         return timestamp;
     }
-    public Tupla refs(){
+    public Tupla<Integer,Integer> refs(){
         return refs;
     }
 

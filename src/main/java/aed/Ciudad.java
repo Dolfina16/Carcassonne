@@ -6,12 +6,14 @@ public class Ciudad {
     private int ganancia;
     private int perdida;
     private int superavit;
+    private int ref;
     
     public Ciudad(int id){
         this.id = id;
         this.ganancia = 0;
         this.perdida = 0;
         this.superavit = 0;
+        this.ref = id;
     }
 
     public int id(){
@@ -30,6 +32,10 @@ public class Ciudad {
         return superavit;
     }
 
+    public int ref(){
+        return ref;
+    }
+
     public void incr_ganancia(int valor){
         ganancia += valor;
         actualizar_superavit();
@@ -42,6 +48,10 @@ public class Ciudad {
 
     public void actualizar_superavit(){
         superavit = ganancia - perdida;
+    }
+
+    public void set_ref(int id){
+        ref = id;
     }
 
     @Override
