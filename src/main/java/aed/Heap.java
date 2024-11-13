@@ -59,7 +59,7 @@ public ArrayList<Tupla<T,Integer>> sacar(int pos){
         tupla = new Tupla<T,Integer>(hashirama, null);
         res.add(tupla);
         elementos.set(pos, elementos.removeLast());
-        while (pos <= (Math.pow(2, Math.floor(log2(tamaño))) - 2)) {
+        while (pos < tamaño) {
             if ((2*pos)+2 < tamaño) {
                 int nueva_pos = siftDown(new int[]{pos,(2*pos)+1,(2*pos)+2});
                 tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
@@ -80,18 +80,21 @@ public ArrayList<Tupla<T,Integer>> sacar(int pos){
     return res;
 }
 
-public void Anhadir(T nuevo){
+public ArrayList<Tupla<T,Integer>> Anhadir(T nuevo){
+    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();
+    Tupla<T,Integer> tupla;
     elementos.add(nuevo);
     tamaño++;
     int pos = tamaño - 1;
-    while ( pos > 0 || ((pos-1)/2) >= 0 ) {
-        T viejo = elementos.get(pos);
+    while ( pos > 0 && !esHeap(new int[]{(pos-1)/2,pos, tamaño})) {
         siftUp(new int[]{(pos-1)/2,pos});
-        if (elementos.get(pos).equals(viejo)) {
-            pos = 0;
-        }
+        tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+        res.add(tupla);
         pos = (pos-1)/2;
     }
+    tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
+    res.add(tupla);
+    return res;
 }
 
 public boolean esHeap(int[] heap){
@@ -130,13 +133,16 @@ public void heapify(){
     }
 }
 
-public void siftUp(int[] elems){
+public int siftUp(int[] elems){
     T vader = elementos.get(elems[0]);
     T luke = elementos.get(elems[1]);
 
     if (comparador.compare(vader, luke) < 0) {
         elementos.set(elems[0], luke);
         elementos.set(elems[1], vader);
+        return elems[0];
+    }else{
+        return elems[1];
     }
 }
 
@@ -189,7 +195,11 @@ public static void main(String[] args) {
         ciudades[i] = new Ciudad(i);
         ciudades[i].incr_ganancia(i);
     }
+
     Heap<Ciudad> heap2 = new Heap<Ciudad>(ciudades, SuperavitComparator);
     System.out.println(heap2.sacar(0));
+    Ciudad city = new Ciudad(8);
+    city.incr_ganancia(10);
+    heap2.Anhadir(city);
 }
 }
