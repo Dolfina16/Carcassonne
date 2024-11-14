@@ -28,6 +28,7 @@ public class BestEffort {
     }
 
     private void crearCities(int n){
+        ciudadesPorId = new Ciudad[n];
         for (int i = 0; i < n; i++) {
             ciudadesPorId[i] = new Ciudad(i);
         }

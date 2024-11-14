@@ -66,7 +66,7 @@ public ArrayList<Tupla<T,Integer>> sacar(int pos){
                 res.add(tupla);
                 pos = nueva_pos == pos ? tamaño : nueva_pos;
             } else if ((2*pos)+1 < tamaño) {
-                int nueva_pos = siftDown(new int[]{pos,(2*pos)+1});
+                int nueva_pos = siftDown(new int[]{pos,(2*pos)+1,(2*pos)+2});
                 tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
                 res.add(tupla);
                 pos = nueva_pos == pos ? tamaño : nueva_pos;
@@ -99,9 +99,9 @@ public ArrayList<Tupla<T,Integer>> Anhadir(T nuevo){
 
 public boolean esHeap(int[] heap){
     if(heap[2] >= tamaño){
-        return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) > 0;
+        return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) >= 0;
     }else{
-        return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) > 0 && comparador.compare(elementos.get(heap[0]), elementos.get(heap[2])) > 0;
+        return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) >= 0 && comparador.compare(elementos.get(heap[0]), elementos.get(heap[2])) >= 0;
     }
 }
 
