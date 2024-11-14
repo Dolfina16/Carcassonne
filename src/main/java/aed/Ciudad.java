@@ -8,7 +8,7 @@ public class Ciudad {
     private int superavit;
     private int ref;
     
-    public Ciudad(int id){
+    public Ciudad(int id){  //COMPLEJIDAD DE LA FUNCION: O(1)
         this.id = id;
         this.ganancia = 0;
         this.perdida = 0;
@@ -16,41 +16,41 @@ public class Ciudad {
         this.ref = id;
     }
 
-    public int id(){
+    public int id(){    //COMPLEJIDAD DE LA FUNCION: O(1)
         return id;
     }
 
-    public int ganancia(){
+    public int ganancia(){  //COMPLEJIDAD DE LA FUNCION: O(1)
         return ganancia;
     }
 
-    public int perdida(){
+    public int perdida(){   //COMPLEJIDAD DE LA FUNCION: O(1)
         return perdida;
     }
 
-    public int superavit(){
+    public int superavit(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         return superavit;
     }
 
-    public int ref(){
+    public int ref(){   //COMPLEJIDAD DE LA FUNCION: O(1)
         return ref;
     }
 
-    public void incr_ganancia(int valor){
+    public void incr_ganancia(int valor){   //COMPLEJIDAD DE LA FUNCION: O(1)
         ganancia += valor;
         actualizar_superavit();
     }
 
-    public void incr_perdida(int valor){
+    public void incr_perdida(int valor){    //COMPLEJIDAD DE LA FUNCION: O(1)
         perdida += valor;
         actualizar_superavit();
     }
 
-    public void actualizar_superavit(){
+    public void actualizar_superavit(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         superavit = ganancia - perdida;
     }
 
-    public void set_ref(int id){
+    public void set_ref(int id){    //COMPLEJIDAD DE LA FUNCION: O(1)
         ref = id;
     }
 

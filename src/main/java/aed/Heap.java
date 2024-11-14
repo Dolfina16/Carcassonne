@@ -9,10 +9,12 @@ public class Heap <T> {
     private int tamaño;
     private Comparator<T> comparador;
 
+// E = atributo elementos
+
 public Heap(T[] arreglo, Comparator<T> comparador){   //COMPLEJIDAD DE LA FUNCION: O(log(E))*O(|E|)
     elementos = new ArrayList<T>();
-    for (T t : arreglo) {   //  tengo O(|E|*1) = O(|E|) donde E es la variable elementos q va a tener la long del arreglo 
-        elementos.add(t);   // O(1)                             pasado por parametro
+    for (T t : arreglo) {   //  tengo O(|E|*1) = O(|E|)  
+        elementos.add(t);   // O(1)                          
         tamaño += 1;        // O(1)
     }
     this.comparador = comparador;
@@ -92,7 +94,7 @@ public ArrayList<Tupla<T,Integer>> Anhadir(T nuevo){     //COMPLEJIDAD DE LA FUN
     elementos.add(nuevo);   //O(1)
     tamaño++;               //O(1)
     int pos = tamaño - 1;   //O(1)
-    while ( pos > 0 && !esHeap(new int[]{(pos-1)/2,pos, tamaño})) {     // O(log(E)) donde E refiere a la var elementos (chequear)
+    while ( pos > 0 && !esHeap(new int[]{(pos-1)/2,pos, tamaño})) {     // O(log(E)) 
         siftUp(new int[]{(pos-1)/2,pos});                               // O(1)
         tupla = new Tupla<T,Integer>(elementos.get(pos), pos);          // O(1)   
         res.add(tupla);                                                 // O(1)    
@@ -165,31 +167,31 @@ public int siftDown(int[] elems){    //COMPLEJIDAD DE LA FUNCION: O(1)
     return elems[0];
 }
 
-public ArrayList<Tupla<T,Integer>> reordenar(int id, int dir){
-    int pos = id;
+public ArrayList<Tupla<T,Integer>> reordenar(int id, int dir){  //COMPLEJIDAD DE LA FUNCION: O(log(E))
+    int pos = id;     // O(1)
     Tupla<T,Integer> tupla;
-    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();
+    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();   //O(1)
     if(dir == 0){
-        while(pos > 0 && !esHeap(new int[]{(pos-1)/2, pos,tamaño})){
-            siftUp(new int[]{(pos-1)/2, pos});
-            tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
-            res.add(tupla);
-            pos = (pos-1)/2;
+        while(pos > 0 && !esHeap(new int[]{(pos-1)/2, pos,tamaño})){    // O(log(E))
+            siftUp(new int[]{(pos-1)/2, pos});  //O(1)
+            tupla = new Tupla<T,Integer>(elementos.get(pos), pos);  //O(1)
+            res.add(tupla); //O(1)
+            pos = (pos-1)/2;    //O(1)
         }
     }else{
-        while(pos*2+1 < tamaño && !esHeap(new int[]{pos, pos*2+1, pos*2+2})){
-            int i = siftDown(new int[]{pos, pos*2+1, pos*2+2});
-            tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
-            res.add(tupla);
-            pos = i;
+        while(pos*2+1 < tamaño && !esHeap(new int[]{pos, pos*2+1, pos*2+2})){   //O(log(E))
+            int i = siftDown(new int[]{pos, pos*2+1, pos*2+2}); //O(1)
+            tupla = new Tupla<T,Integer>(elementos.get(pos), pos);  //O(1)
+            res.add(tupla); //O(1)
+            pos = i;    //O(1)
         }
     }
-    tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
-    res.add(tupla);
-    return res;
+    tupla = new Tupla<T,Integer>(elementos.get(pos), pos);  //O(1)
+    res.add(tupla); //O(1)
+    return res; //O(1)
 }
 
-public String toString(){     //COMPLEJIDAD DE LA FUNCION: O(|E|) donde E es elementos 
+public String toString(){     //COMPLEJIDAD DE LA FUNCION: O(|E|) 
     String res = "[";
     for (T t : elementos) {     //O(|E|)
         res += t.toString() + ",";  // O(1)
