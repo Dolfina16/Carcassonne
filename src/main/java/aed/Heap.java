@@ -9,31 +9,32 @@ public class Heap <T> {
     private int tamaño;
     private Comparator<T> comparador;
 
-public Heap(T[] arreglo, Comparator<T> comparador){
+public Heap(T[] arreglo, Comparator<T> comparador){   //COMPLEJIDAD DE LA FUNCION: O(log(E))*O(|E|)
     elementos = new ArrayList<T>();
-    for (T t : arreglo) {
-        elementos.add(t);
-        tamaño += 1;
+    for (T t : arreglo) {   //  tengo O(|E|*1) = O(|E|) donde E es la variable elementos q va a tener la long del arreglo 
+        elementos.add(t);   // O(1)                             pasado por parametro
+        tamaño += 1;        // O(1)
     }
     this.comparador = comparador;
-    heapify();
+    heapify();  //O(log(E))*O(|E|)
 }
 
-public T get_elem(int indice){
+public T get_elem(int indice){     //COMPLEJIDAD DE LA FUNCION:  O(1)
     return elementos.get(indice);
 }
 
-public int tamaño(){
+public int tamaño(){   //COMPLEJIDAD DE LA FUNCION: O(1)
     return tamaño;
 }
 
-public static int log2(int N){
+public static int log2(int N){     //O(1)
+    
     int result = (int)(Math.log(N) / Math.log(2));
 
     return result;
 }
 
-public T maximus(){
+public T maximus(){     //COMPLEJIDAD DE LA FUNCION: O(1)
     return elementos.getFirst();
 }
 
@@ -85,24 +86,24 @@ public ArrayList<Tupla<T,Integer>> sacar(int pos){
     return res;
 }
 
-public ArrayList<Tupla<T,Integer>> Anhadir(T nuevo){
-    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();
+public ArrayList<Tupla<T,Integer>> Anhadir(T nuevo){     //COMPLEJIDAD DE LA FUNCION: O(log(E))
+    ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();   
     Tupla<T,Integer> tupla;
-    elementos.add(nuevo);
-    tamaño++;
-    int pos = tamaño - 1;
-    while ( pos > 0 && !esHeap(new int[]{(pos-1)/2,pos, tamaño})) {
-        siftUp(new int[]{(pos-1)/2,pos});
-        tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
-        res.add(tupla);
-        pos = (pos-1)/2;
+    elementos.add(nuevo);   //O(1)
+    tamaño++;               //O(1)
+    int pos = tamaño - 1;   //O(1)
+    while ( pos > 0 && !esHeap(new int[]{(pos-1)/2,pos, tamaño})) {     // O(log(E)) donde E refiere a la var elementos (chequear)
+        siftUp(new int[]{(pos-1)/2,pos});                               // O(1)
+        tupla = new Tupla<T,Integer>(elementos.get(pos), pos);          // O(1)   
+        res.add(tupla);                                                 // O(1)    
+        pos = (pos-1)/2;                                                // O(1)     
     }
-    tupla = new Tupla<T,Integer>(elementos.get(pos), pos);
-    res.add(tupla);
-    return res;
+    tupla = new Tupla<T,Integer>(elementos.get(pos), pos);  // O(1)
+    res.add(tupla); // O(1)
+    return res;     
 }
 
-public boolean esHeap(int[] heap){
+public boolean esHeap(int[] heap){   //COMPLEJIDAD DE LA FUNCION: O(1)  
     if(heap[2] >= tamaño){
         return comparador.compare(elementos.get(heap[0]), elementos.get(heap[1])) >= 0;
     }else{
@@ -110,55 +111,55 @@ public boolean esHeap(int[] heap){
     }
 }
 
-public void heapify(){
-    int pos = tamaño - 1;
-    if (tamaño > 2){
-        if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){
-            siftDown(new int[]{(pos-1)/2,pos-1,pos});
-            pos-=2;
+public void heapify(){     //COMPLEJIDAD DE LA FUNCION: O(log(E))*O(|E|)
+    int pos = tamaño - 1;   //O(1)
+    if (tamaño > 2){        
+        if(elementos.get((pos-1)/2) == elementos.get((pos-2)/2)){   //O(1)
+            siftDown(new int[]{(pos-1)/2,pos-1,pos});  //O(1)     
+            pos-=2;     //O(1)
         }else{
-            siftDown(new int[]{(pos-1)/2,pos,tamaño});
-            pos-=1;
+            siftDown(new int[]{(pos-1)/2,pos,tamaño}); //O(1)
+            pos-=1; // O(1)
         }
-        while(pos > 0 && !esHeap(new int[]{(pos-1)/2,pos,pos-1})){
-            int indice = siftDown(new int[]{(pos-1)/2,pos,pos-1});
-            pos-=2;
-            while((indice*2 + 1) < tamaño && !esHeap(new int[]{indice,indice*2 + 1,indice*2 + 2})){
-                indice = siftDown(new int[]{indice,indice*2 + 1,indice*2 + 2});
+        while(pos > 0 && !esHeap(new int[]{(pos-1)/2,pos,pos-1})){ // O(|E|)
+            int indice = siftDown(new int[]{(pos-1)/2,pos,pos-1}); //O(1)
+            pos-=2; //O(1)
+            while((indice*2 + 1) < tamaño && !esHeap(new int[]{indice,indice*2 + 1,indice*2 + 2})){  //O(log(E))
+                indice = siftDown(new int[]{indice,indice*2 + 1,indice*2 + 2}); //O(1)
             }
         }
     }else if(tamaño == 2){
-        siftDown(new int[]{0,1,2});
+        siftDown(new int[]{0,1,2}); //O(1)
     }
 }
 
-public int siftUp(int[] elems){
-    T vader = elementos.get(elems[0]);
-    T luke = elementos.get(elems[1]);
+public int siftUp(int[] elems){        //COMPLEJIDAD DE LA FUNCION: O(1)
+    T padre = elementos.get(elems[0]);  // O(1)
+    T hijo = elementos.get(elems[1]);   // O(1)
 
-    if (comparador.compare(vader, luke) < 0) {
-        elementos.set(elems[0], luke);
-        elementos.set(elems[1], vader);
-        return elems[0];
+    if (comparador.compare(padre, hijo) < 0) { // O(1)
+        elementos.set(elems[0], hijo);  // O(1)
+        elementos.set(elems[1], padre); // O(1)
+        return elems[0];    // O(1)
     }else{
-        return elems[1];
+        return elems[1];    //O(1)
     }
 }
 
-public int siftDown(int[] elems){
-    T padre = elementos.get(elems[0]);
-    if(elems[2] >= tamaño){
-            if(comparador.compare(padre, elementos.get(elems[1])) < 0){
-                elementos.set(elems[0], elementos.get(elems[1]));
-                elementos.set(elems[1], padre);
-                return elems[1];
+public int siftDown(int[] elems){    //COMPLEJIDAD DE LA FUNCION: O(1)
+    T padre = elementos.get(elems[0]); //O(1)
+    if(elems[2] >= tamaño){ //O(1)
+            if(comparador.compare(padre, elementos.get(elems[1])) < 0){ // O(1)
+                elementos.set(elems[0], elementos.get(elems[1]));   // O(1)
+                elementos.set(elems[1], padre); //O(1)
+                return elems[1];    //O(1)
             }
     }else{
-        int hijoMayor = comparador.compare(elementos.get(elems[1]), elementos.get(elems[2])) > 0 ? elems[1] : elems[2];
-        if(comparador.compare(padre, elementos.get(hijoMayor)) < 0){
-            elementos.set(elems[0], elementos.get(hijoMayor));
-            elementos.set(hijoMayor, padre);
-            return hijoMayor;
+        int hijoMayor = comparador.compare(elementos.get(elems[1]), elementos.get(elems[2])) > 0 ? elems[1] : elems[2]; //O(1) ?
+        if(comparador.compare(padre, elementos.get(hijoMayor)) < 0){    //O(1)
+            elementos.set(elems[0], elementos.get(hijoMayor));  //O(1)
+            elementos.set(hijoMayor, padre);    //O(1)
+            return hijoMayor;   //  O(1)
         }
     }
     return elems[0];
@@ -188,12 +189,12 @@ public ArrayList<Tupla<T,Integer>> reordenar(int id, int dir){
     return res;
 }
 
-public String toString(){
+public String toString(){     //COMPLEJIDAD DE LA FUNCION: O(|E|) donde E es elementos 
     String res = "[";
-    for (T t : elementos) {
-        res += t.toString() + ",";
-    }
-    return res + "]";
+    for (T t : elementos) {     //O(|E|)
+        res += t.toString() + ",";  // O(1)
+    }  
+    return res + "]";   //O(1)
 }
 
 
