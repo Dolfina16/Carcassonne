@@ -41,7 +41,12 @@ public ArrayList<Tupla<T,Integer>> sacar(int pos){
     T hashirama;
     Tupla<T,Integer> tupla = new Tupla<T,Integer>(null, null);
     ArrayList<Tupla<T,Integer>> res = new ArrayList<Tupla<T,Integer>>();
-    if (tamaño == 0) {
+    if (pos == tamaño - 1) {
+        tamaño--;
+        hashirama = elementos.removeLast();
+        tupla = new Tupla<T,Integer>(hashirama, null);
+        res.add(tupla);
+    }else if (tamaño == 0) {
         return null;
     }else if (tamaño < 3) {
         hashirama = elementos.remove(pos);

@@ -42,4 +42,9 @@ public class Traslado {
     public void set_refAnti(int i){
         refs.set_second(i);
     }
+
+    @Override
+    public String toString(){
+        return "" + timestamp;
+    }
 }
