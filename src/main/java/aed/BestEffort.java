@@ -69,36 +69,18 @@ public class BestEffort {
         }
     }
 
-    // private <T> void cambiarRefes(ArrayList<Tupla<T,Integer>> cambios, int x){
-    //     for (Tupla<T,Integer> e : cambios) {
-    //         if(e.getClass().getName() == "Ciudad"){
-    //             Ciudad ciudad = (Ciudad) e.getFirst();
-    //             ciudad.set_ref(e.getSecond());
-    //         }else{
-    //             Traslado traslado = (Traslado) e.getFirst();
-    //             if (x == 0) {
-    //                 traslado.set_refRed(e.getSecond());
-    //             }else{
-    //                 traslado.set_refAnti(e.getSecond());
-    //             }
-    //         }
-    //     }
-    // }
-
-    private void cambiarRefesCiudad(ArrayList<Tupla<Ciudad,Integer>> cambios){
-        for (Tupla<Ciudad,Integer> e : cambios) {
-            Ciudad ciudad = e.getFirst();
-            ciudad.set_ref(e.getSecond());
-        }
-    }
-
-    private void cambiarRefesTraslado(ArrayList<Tupla<Traslado,Integer>> cambios, int x){
-        for (Tupla<Traslado,Integer> e : cambios) {
-            Traslado traslado = e.getFirst();
-            if (x == 0) {
-                traslado.set_refRed(e.getSecond());
+    private <T> void cambiarRefes(ArrayList<Tupla<T,Integer>> cambios, int x){
+        for (Tupla<T,Integer> e : cambios) {
+            if(e.getFirst().getClass().getName() == "aed.Ciudad"){
+                Ciudad ciudad = (Ciudad) e.getFirst();
+                ciudad.set_ref(e.getSecond());
             }else{
-                traslado.set_refAnti(e.getSecond());
+                Traslado traslado = (Traslado) e.getFirst();
+                if (x == 0) {
+                    traslado.set_refRed(e.getSecond());
+                }else{
+                    traslado.set_refAnti(e.getSecond());
+                }
             }
         }
     }
@@ -119,10 +101,10 @@ public class BestEffort {
         for(int i=0; i< traslados.length; i++){
             
             mutados = trasladosRedi.Anhadir(traslados[i]); //O(log T)
-            cambiarRefesTraslado(mutados, i);//O(log T)
+            cambiarRefes(mutados, 0);//O(log T)
 
             mutados = trasladosAnti.Anhadir(traslados[i]); //O(log T)
-            cambiarRefesTraslado(mutados, 1); //O(log T)        
+            cambiarRefes(mutados, 1); //O(log T)        
         
         } //O[|traslados|.(4.log(T))]
     }
@@ -138,19 +120,19 @@ public class BestEffort {
             tras_mutantes = trasladosRedi.sacar(0); // O(log(T))
             despachado = tras_mutantes.removeFirst().getFirst(); // O(1)
             idsDespachados[i] = (despachado.id()); // O(1)
-            cambiarRefesTraslado(tras_mutantes,0); // O(log(T))
+            cambiarRefes(tras_mutantes,0); // O(log(T))
 
             tras_mutantes = trasladosAnti.sacar(despachado.refs().getSecond()); // O(log(T))
             tras_mutantes.removeFirst(); // O(1)
-            cambiarRefesTraslado(tras_mutantes,1); // O(log(T))
+            cambiarRefes(tras_mutantes,1); // O(log(T))
 
             ciudadesPorId[despachado.origen()].incr_ganancia(despachado.gananciaNeta()); // O(1)
             ciu_mutantes = ciudadesSuper.reordenar(ciudadesPorId[despachado.origen()].ref(), 0); // O(log(C))
-            cambiarRefesCiudad(ciu_mutantes); // O(log(C))
+            cambiarRefes(ciu_mutantes,0); // O(log(C))
 
             ciudadesPorId[despachado.destino()].incr_perdida(despachado.gananciaNeta()); // O(1)
             ciu_mutantes = ciudadesSuper.reordenar(ciudadesPorId[despachado.destino()].ref(), -1); // O(log(C))
-            cambiarRefesCiudad(ciu_mutantes); // O(log(C))
+            cambiarRefes(ciu_mutantes,0); // O(log(C))
 
             if(ciudadesPorId[mayorGanancia.getFirst()].ganancia() < ciudadesPorId[despachado.origen()].ganancia() || mayorGanancia.getFirst() == despachado.origen()){ // O(1)
                 mayorGanancia = new ArrayList<Integer>();
@@ -183,19 +165,19 @@ public class BestEffort {
             tras_mutantes = trasladosAnti.sacar(0); // O(log(T))
             despachado = tras_mutantes.removeFirst().getFirst(); // O(1)
             idsDespachados[i] = (despachado.id()); // O(1)
-            cambiarRefesTraslado(tras_mutantes,0); // O(log(T))
+            cambiarRefes(tras_mutantes,1); // O(log(T))
 
             tras_mutantes = trasladosRedi.sacar(despachado.refs().getFirst()); // O(log(T))
             tras_mutantes.removeFirst(); // O(1)
-            cambiarRefesTraslado(tras_mutantes,1); // O(log(T))
+            cambiarRefes(tras_mutantes,0); // O(log(T))
 
             ciudadesPorId[despachado.origen()].incr_ganancia(despachado.gananciaNeta()); // O(1)
             ciu_mutantes = ciudadesSuper.reordenar(ciudadesPorId[despachado.origen()].ref(), 0); // O(log(C))
-            cambiarRefesCiudad(ciu_mutantes); // O(log(C))
+            cambiarRefes(ciu_mutantes,0); // O(log(C))
 
             ciudadesPorId[despachado.destino()].incr_perdida(despachado.gananciaNeta()); // O(1)
             ciu_mutantes = ciudadesSuper.reordenar(ciudadesPorId[despachado.destino()].ref(), -1); // O(log(C))
-            cambiarRefesCiudad(ciu_mutantes); // O(log(C))
+            cambiarRefes(ciu_mutantes,0); // O(log(C))
 
             if(ciudadesPorId[mayorGanancia.getFirst()].ganancia() < ciudadesPorId[despachado.origen()].ganancia() || mayorGanancia.getFirst() == despachado.origen()){ // O(1)
                 mayorGanancia = new ArrayList<Integer>();
@@ -250,9 +232,9 @@ public class BestEffort {
         };
 
         BestEffort sis = new BestEffort(7, listaTraslados);
-
+        sis.despacharMasRedituables(3);
         sis.despacharMasAntiguos(3);
-        sis.despacharMasAntiguos(3);
+        sis.despacharMasAntiguos(1);
 
     }
     

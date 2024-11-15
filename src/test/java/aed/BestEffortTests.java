@@ -166,8 +166,6 @@ public class BestEffortTests {
         sis.despacharMasRedituables(6);
 
         assertEquals(1386, sis.gananciaPromedioPorTraslado());
-        
-
     }
 
     @Test

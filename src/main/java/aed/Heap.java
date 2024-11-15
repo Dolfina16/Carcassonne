@@ -51,13 +51,13 @@ public ArrayList<Tupla<T,Integer>> sacar(int pos){
         return null;
     }else if (tamaño < 3) {
         hashirama = elementos.remove(pos);
-        tamaño--;
         tupla = new Tupla<T,Integer>(hashirama, null);
         res.add(tupla);
         if(tamaño == 2){
             tupla = new Tupla<T,Integer>(elementos.get(0), 0);
             res.add(tupla);
         }
+        tamaño--;
         return res;
     }else{
         tamaño--;
