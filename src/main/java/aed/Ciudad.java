@@ -50,12 +50,12 @@ public class Ciudad {
         superavit = ganancia - perdida;
     }
 
-    public void set_ref(int id){    //COMPLEJIDAD DE LA FUNCION: O(1)
+    public void setear_ref(int id){    //COMPLEJIDAD DE LA FUNCION: O(1)
         ref = id;
     }
 
     @Override
-    public String toString(){
+    public String toString(){   //COMPLEJIDAD DE LA FUNCION: O(1)
         return "" + superavit;
     }
 }

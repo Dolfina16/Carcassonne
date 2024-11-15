@@ -36,15 +36,11 @@ public class Traslado {
         return refs;
     }
 
-    public void set_refRed(int i){ //COMPLEJIDAD DE LA FUNCION: O(1)
-        refs.set_first(i);
+    public void setear_refRedituable(int i){ //COMPLEJIDAD DE LA FUNCION: O(1)
+        refs.setear_primero(i);
     }
-    public void set_refAnti(int i){ //COMPLEJIDAD DE LA FUNCION: O(1)
-        refs.set_second(i);
+    public void setear_refAntiguedad(int i){ //COMPLEJIDAD DE LA FUNCION: O(1)
+        refs.setear_segundo(i);
     }
 
-    @Override
-    public String toString(){
-        return "" + timestamp;
-    }
 }
