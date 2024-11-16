@@ -42,11 +42,11 @@ public class Traslado {
         handlerAnti = handler;
     }
 
-    public Handler handlerRedi(){
+    public Handler handlerRedi(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         return handlerRedi;
     }
     
-    public Handler handlerAnti(){
+    public Handler handlerAnti(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         return handlerAnti;
     }
 }

@@ -9,11 +9,12 @@ public class Ciudad {
     private Handler handler;
     
     public Ciudad(int id){  //COMPLEJIDAD DE LA FUNCION: O(1)
-        this.id = id;
-        this.ganancia = 0;
-        this.perdida = 0;
-        this.superavit = 0;
-        handler = new Handler(null);
+        this.id = id;       //1
+        this.ganancia = 0; //1
+        this.perdida = 0; //1
+        this.superavit = 0; //1
+        handler = new Handler(null);    //2 
+                                        //tF = 6 --> O(1)
     }
 
     public int id(){    //COMPLEJIDAD DE LA FUNCION: O(1)
@@ -46,11 +47,11 @@ public class Ciudad {
         superavit = ganancia - perdida;
     }
 
-    public void set_handler(Handler handler){
+    public void set_handler(Handler handler){ //COMPLEJIDAD DE LA FUNCION: O(1)
         this.handler = handler;
     }
 
-    public Handler handler(){
+    public Handler handler(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         return handler;
     }
 
