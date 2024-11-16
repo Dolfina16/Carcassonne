@@ -7,6 +7,7 @@ public class Ciudad {
     private int perdida;
     private int superavit;
     private int ref;
+    private Handler handler;
     
     public Ciudad(int id){  //COMPLEJIDAD DE LA FUNCION: O(1)
         this.id = id;
@@ -52,6 +53,14 @@ public class Ciudad {
 
     public void setear_ref(int id){    //COMPLEJIDAD DE LA FUNCION: O(1)
         ref = id;
+    }
+
+    public void set_handler(Handler handler){
+        this.handler = handler;
+    }
+
+    public Handler handler(){
+        return handler;
     }
 
     @Override

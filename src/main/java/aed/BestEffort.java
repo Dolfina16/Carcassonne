@@ -38,7 +38,8 @@ public class BestEffort {
     private void crearCiudades(int n){  //COMPLEJIDAD DE LA FUNCION: 
         ciudadesPorId = new Ciudad[n];  // O(1)
         for (int i = 0; i < n; i++) {
-            ciudadesPorId[i] = new Ciudad(i);   //O(1)
+            ciudadesPorId[i] = new Ciudad(i);
+            ciudadesPorId[i].set_handler(new Handler(null));   //O(1)
         }
     }
 
@@ -76,14 +77,27 @@ public class BestEffort {
         }
     }
 
-    public BestEffort(int cantCiudades, Traslado[] traslados){  //COMPLEJIDAD DE LA FUNCION:
+    public <T> BestEffort(int cantCiudades, Traslado[] traslados){  //COMPLEJIDAD DE LA FUNCION:
         crearCiudades(cantCiudades);//O(C) t(T,C)=C
-        heapCSuperavit = new Heap<Ciudad>(ciudadesPorId, SuperavitComparator); //O(C) t(T,C)=2C
+        Tupla<Ciudad,Handler>[] ciudades = new Tupla[cantCiudades];
+        for (int index = 0; index < cantCiudades; index++) {
+            ciudades[index] = new Tupla<Ciudad,Handler>(ciudadesPorId[index], ciudadesPorId[index].handler());
+        }
+        heapCSuperavit = new Heap<Ciudad>(ciudades, SuperavitComparator); //O(C) t(T,C)=2C
         mayorGanancia.add(0);   //O(1)
         mayorPerdida.add(0);    //O(1)
+        Tupla<Traslado,Handler>[] trasladosR = new Tupla[traslados.length];
+        Tupla<Traslado,Handler>[] trasladosA = new Tupla[traslados.length];
 
-        heapTRedituable = new Heap<Traslado>(traslados, RedituabilidadComparator); //O(T) t(T,C)=2C + T
-        heapTAntiguedad = new Heap<Traslado>(traslados, AntiguedadComparator); //O(T) t(T,C)=2C + 2T
+        for (int i = 0; i < traslados.length; i++) {
+            traslados[i].setear_handlerRedi(new Handler(null));
+            trasladosR[i] = new Tupla<Traslado,Handler>(traslados[i], traslados[i].handlerRedi());
+            traslados[i].setear_handlerAnti(new Handler(null));
+            trasladosA[i] = new Tupla<Traslado,Handler>(traslados[i], traslados[i].handlerAnti());
+        }
+
+        heapTRedituable = new Heap<Traslado>(trasladosR, RedituabilidadComparator); //O(T) t(T,C)=2C + T
+        heapTAntiguedad = new Heap<Traslado>(trasladosA, AntiguedadComparator); //O(T) t(T,C)=2C + 2T
         asignarRefes(); // O(T) t(T,C)=2C + 4T
     } //O(C+T)
 
@@ -109,33 +123,33 @@ public class BestEffort {
         for (int i = 0; i < aDespachar; i++) {
 
             tras_mutados = heapTRedituable.sacar(0); // O(log(T))
-            despachado = tras_mutados.removeFirst().ObtenerPrimero(); // O(1)
+            despachado = tras_mutados.remove(0).ObtenerPrimero(); // O(1)
             idsDespachados[i] = (despachado.id()); // O(1)
             cambiarRefes(tras_mutados,0); // O(log(T))
 
             tras_mutados = heapTAntiguedad.sacar(despachado.refs().ObtenerSegundo()); // O(log(T))
-            tras_mutados.removeFirst(); // O(1)
+            tras_mutados.remove(0); // O(1)
             cambiarRefes(tras_mutados,1); // O(log(T))
 
-            ciudadesPorId[despachado.origen()].incr_ganancia(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.origen()].ref(), 0); // O(log(C))
+            ciudadesPorId[despachado.origen()].object().incr_ganancia(despachado.gananciaNeta()); // O(1)
+            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.origen()].ref(0), 0); // O(log(C))
             cambiarRefes(ciu_mutados,0); // O(log(C))
 
-            ciudadesPorId[despachado.destino()].incr_perdida(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.destino()].ref(), -1); // O(log(C))
+            ciudadesPorId[despachado.destino()].object().incr_perdida(despachado.gananciaNeta()); // O(1)
+            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.destino()].ref(0), -1); // O(log(C))
             cambiarRefes(ciu_mutados,0); // O(log(C))
 
-            if(ciudadesPorId[mayorGanancia.getFirst()].ganancia() < ciudadesPorId[despachado.origen()].ganancia() || mayorGanancia.getFirst() == despachado.origen()){ // O(1)
+            if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() < ciudadesPorId[despachado.origen()].object().ganancia() || mayorGanancia.get(0) == despachado.origen()){ // O(1)
                 mayorGanancia = new ArrayList<Integer>();   //O(1)
                 mayorGanancia.add(despachado.origen()); //O(1)
-            }else if(ciudadesPorId[mayorGanancia.getFirst()].ganancia() == ciudadesPorId[despachado.origen()].ganancia()){
+            }else if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() == ciudadesPorId[despachado.origen()].object().ganancia()){
                 mayorGanancia.add(despachado.origen()); //O(1)
             }
 
-            if(ciudadesPorId[mayorPerdida.getFirst()].perdida() < ciudadesPorId[despachado.destino()].perdida() || mayorPerdida.getFirst() == despachado.destino()){
+            if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() < ciudadesPorId[despachado.destino()].object().perdida() || mayorPerdida.get(0) == despachado.destino()){
                 mayorPerdida = new ArrayList<Integer>(); //O(1)
                 mayorPerdida.add(despachado.destino()); //O(1)
-            }else if(ciudadesPorId[mayorPerdida.getFirst()].perdida() == ciudadesPorId[despachado.destino()].perdida()){
+            }else if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() == ciudadesPorId[despachado.destino()].object().perdida()){
                 mayorPerdida.add(despachado.destino()); //O(1)
             }
             
@@ -154,33 +168,33 @@ public class BestEffort {
         for (int i = 0; i < aDespachar; i++) {
 
             tras_mutados = heapTAntiguedad.sacar(0); // O(log(T))
-            despachado = tras_mutados.removeFirst().ObtenerPrimero(); // O(1)
+            despachado = tras_mutados.remove(0).ObtenerPrimero(); // O(1)
             idsDespachados[i] = (despachado.id()); // O(1)
             cambiarRefes(tras_mutados,1); // O(log(T))
 
             tras_mutados = heapTRedituable.sacar(despachado.refs().ObtenerPrimero()); // O(log(T))
-            tras_mutados.removeFirst(); // O(1)
+            tras_mutados.remove(0); // O(1)
             cambiarRefes(tras_mutados,0); // O(log(T))
 
-            ciudadesPorId[despachado.origen()].incr_ganancia(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.origen()].ref(), 0); // O(log(C))
+            ciudadesPorId[despachado.origen()].object().incr_ganancia(despachado.gananciaNeta()); // O(1)
+            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.origen()].ref(0), 0); // O(log(C))
             cambiarRefes(ciu_mutados,0); // O(log(C))
 
-            ciudadesPorId[despachado.destino()].incr_perdida(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.destino()].ref(), -1); // O(log(C))
+            ciudadesPorId[despachado.destino()].object().incr_perdida(despachado.gananciaNeta()); // O(1)
+            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.destino()].ref(0), -1); // O(log(C))
             cambiarRefes(ciu_mutados,0); // O(log(C))
 
-            if(ciudadesPorId[mayorGanancia.getFirst()].ganancia() < ciudadesPorId[despachado.origen()].ganancia() || mayorGanancia.getFirst() == despachado.origen()){ // O(1)
+            if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() < ciudadesPorId[despachado.origen()].object().ganancia() || mayorGanancia.get(0) == despachado.origen()){ // O(1)
                 mayorGanancia = new ArrayList<Integer>();   //O(1)
                 mayorGanancia.add(despachado.origen());     //O(1)
-            }else if(ciudadesPorId[mayorGanancia.getFirst()].ganancia() == ciudadesPorId[despachado.origen()].ganancia()){
+            }else if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() == ciudadesPorId[despachado.origen()].object().ganancia()){
                 mayorGanancia.add(despachado.origen());     //O(1)
             }
 
-            if(ciudadesPorId[mayorPerdida.getFirst()].perdida() < ciudadesPorId[despachado.destino()].perdida() || mayorPerdida.getFirst() == despachado.destino()){
+            if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() < ciudadesPorId[despachado.destino()].object().perdida() || mayorPerdida.get(0) == despachado.destino()){
                 mayorPerdida = new ArrayList<Integer>(); //O(1)
                 mayorPerdida.add(despachado.destino()); //O(1)
-            }else if(ciudadesPorId[mayorPerdida.getFirst()].perdida() == ciudadesPorId[despachado.destino()].perdida()){
+            }else if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() == ciudadesPorId[despachado.destino()].object().perdida()){
                 mayorPerdida.add(despachado.destino()); //O(1)
             }
             

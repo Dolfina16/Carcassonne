@@ -7,7 +7,8 @@ public class Traslado {
     private int destino;
     private int gananciaNeta;
     private int timestamp;
-    private Tupla<Integer,Integer> refs = new Tupla(null, null);
+    private Handler handlerRedi;
+    private Handler handlerAnti;
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){ //COMPLEJIDAD DE LA FUNCION: O(1)
         this.id = id;
@@ -32,15 +33,18 @@ public class Traslado {
     public int timestamp(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         return timestamp; 
     }
-    public Tupla<Integer,Integer> refs(){ //COMPLEJIDAD DE LA FUNCION: O(1)
-        return refs;
+    public void setear_handlerRedi(Handler handler){ //COMPLEJIDAD DE LA FUNCION: O(1)
+        handlerRedi = handler;
+    }
+    public void setear_handlerAnti(Handler handler){ //COMPLEJIDAD DE LA FUNCION: O(1)
+        handlerAnti = handler;
     }
 
-    public void setear_refRedituable(int i){ //COMPLEJIDAD DE LA FUNCION: O(1)
-        refs.setear_primero(i);
+    public Handler handlerRedi(){
+        return handlerRedi;
     }
-    public void setear_refAntiguedad(int i){ //COMPLEJIDAD DE LA FUNCION: O(1)
-        refs.setear_segundo(i);
+    
+    public Handler handlerAnti(){
+        return handlerAnti;
     }
-
 }
