@@ -16,6 +16,8 @@ public class Traslado {
         this.destino = destino;
         this.gananciaNeta = gananciaNeta;
         this.timestamp = timestamp;
+        handlerRedi = new Handler(null);
+        handlerAnti = new Handler(null);
     }
 
     public int id(){ //COMPLEJIDAD DE LA FUNCION: O(1)

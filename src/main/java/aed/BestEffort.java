@@ -5,12 +5,12 @@ import java.util.Comparator;
 
 
 public class BestEffort {
-    private ArrayList<Integer> mayorGanancia = new ArrayList<Integer>();
-    private ArrayList<Integer> mayorPerdida = new ArrayList<Integer>();
+    private ArrayList<Integer> masProsperas = new ArrayList<Integer>();
+    private ArrayList<Integer> masDecadentes = new ArrayList<Integer>();
     private int sumaGanancias;
     private int trasladosDespachados;
     private Heap<Ciudad> heapCSuperavit;
-    private Ciudad[] ciudadesPorId;
+    private Tupla<Ciudad, Handler>[] ciudadesPorId;
     private Heap<Traslado> heapTRedituable;
     private Heap<Traslado> heapTAntiguedad;
 
@@ -36,122 +36,54 @@ public class BestEffort {
     AntigComparador AntiguedadComparator = new AntigComparador();
 
     private void crearCiudades(int n){  //COMPLEJIDAD DE LA FUNCION: 
-        ciudadesPorId = new Ciudad[n];  // O(1)
+        ciudadesPorId = new Tupla[n];  // O(1)
         for (int i = 0; i < n; i++) {
-            ciudadesPorId[i] = new Ciudad(i);
-            ciudadesPorId[i].set_handler(new Handler(null));   //O(1)
-        }
-    }
-
-    private void asignarRefes(){    //COMPLEJIDAD DE LA FUNCION: 
-        int i = 0;
-        int j = 0;
-        int k = 0;
-        while(i < heapTRedituable.tamaño()){
-            heapTRedituable.obtenerElem(i).setear_refRedituable(i); //O(1)
-            i++;    //O(1)
-        }
-        while(j < heapTAntiguedad.tamaño()){
-            heapTAntiguedad.obtenerElem(j).setear_refAntiguedad(j); //O(1)
-            j++; //O(1)
-        }
-        while (k < heapCSuperavit.tamaño()) {
-            heapCSuperavit.obtenerElem(k).setear_ref(k); //O(1)
-            k++; //O(1)
-        }
-    }
-
-    private <T> void cambiarRefes(ArrayList<Tupla<T,Integer>> cambios, int x){  //COMPLEJIDAD DE LA FUNCION:
-        for (Tupla<T,Integer> e : cambios) {
-            if(e.ObtenerPrimero().getClass().getName() == "aed.Ciudad"){
-                Ciudad ciudad = (Ciudad) e.ObtenerPrimero(); //O(1)
-                ciudad.setear_ref(e.ObtenerSegundo()); //O(1)
-            }else{
-                Traslado traslado = (Traslado) e.ObtenerPrimero(); //O(1)
-                if (x == 0) {
-                    traslado.setear_refRedituable(e.ObtenerSegundo()); //O(1)
-                }else{
-                    traslado.setear_refAntiguedad(e.ObtenerSegundo()); //O(1)
-                }
-            }
+            Ciudad ciudad = new Ciudad(i);
+            ciudadesPorId[i] = new Tupla<Ciudad,Handler>(ciudad, ciudad.handler());  //O(1)
         }
     }
 
     public <T> BestEffort(int cantCiudades, Traslado[] traslados){  //COMPLEJIDAD DE LA FUNCION:
         crearCiudades(cantCiudades);//O(C) t(T,C)=C
-        Tupla<Ciudad,Handler>[] ciudades = new Tupla[cantCiudades];
-        for (int index = 0; index < cantCiudades; index++) {
-            ciudades[index] = new Tupla<Ciudad,Handler>(ciudadesPorId[index], ciudadesPorId[index].handler());
-        }
-        heapCSuperavit = new Heap<Ciudad>(ciudades, SuperavitComparator); //O(C) t(T,C)=2C
-        mayorGanancia.add(0);   //O(1)
-        mayorPerdida.add(0);    //O(1)
+        heapCSuperavit = new Heap<Ciudad>(ciudadesPorId, SuperavitComparator); //O(C) t(T,C)=2C
+
         Tupla<Traslado,Handler>[] trasladosR = new Tupla[traslados.length];
         Tupla<Traslado,Handler>[] trasladosA = new Tupla[traslados.length];
 
         for (int i = 0; i < traslados.length; i++) {
-            traslados[i].setear_handlerRedi(new Handler(null));
             trasladosR[i] = new Tupla<Traslado,Handler>(traslados[i], traslados[i].handlerRedi());
-            traslados[i].setear_handlerAnti(new Handler(null));
             trasladosA[i] = new Tupla<Traslado,Handler>(traslados[i], traslados[i].handlerAnti());
         }
 
         heapTRedituable = new Heap<Traslado>(trasladosR, RedituabilidadComparator); //O(T) t(T,C)=2C + T
-        heapTAntiguedad = new Heap<Traslado>(trasladosA, AntiguedadComparator); //O(T) t(T,C)=2C + 2T
-        asignarRefes(); // O(T) t(T,C)=2C + 4T
+        heapTAntiguedad = new Heap<Traslado>(trasladosA, AntiguedadComparator); //O(T) t(T,C)=2C + 2T // O(T) t(T,C)=2C + 4T
     } //O(C+T)
 
     public void registrarTraslados(Traslado[] traslados){   //COMPLEJIDAD DE LA FUNCION:
-        ArrayList<Tupla<Traslado,Integer>> mutados;
         for(int i=0; i< traslados.length; i++){
-            
-            mutados = heapTRedituable.Agregar(traslados[i]); //O(log T)
-            cambiarRefes(mutados, 0);//O(log T)
+            heapTRedituable.Añadir(new Tupla<>(traslados[i], traslados[i].handlerRedi())); //O(log T)
 
-            mutados = heapTAntiguedad.Agregar(traslados[i]); //O(log T)
-            cambiarRefes(mutados, 1); //O(log T)        
-        
+            heapTAntiguedad.Añadir(new Tupla<>(traslados[i], traslados[i].handlerAnti())); //O(log T)
         } //O[|traslados|.(4.log(T))]
     }
 
     public <T> int[] despacharMasRedituables(int n){ //COMPLEJIDAD DE LA FUNCION: O(n(log(T)+log(C)))
         int aDespachar = Math.min(n, heapTRedituable.tamaño()); //O(1)
         int[] idsDespachados = new int[aDespachar]; //O(1)
-        ArrayList<Tupla<Traslado,Integer>> tras_mutados;
-        ArrayList<Tupla<Ciudad,Integer>> ciu_mutados;
         Traslado despachado;
         for (int i = 0; i < aDespachar; i++) {
-
-            tras_mutados = heapTRedituable.sacar(0); // O(log(T))
-            despachado = tras_mutados.remove(0).ObtenerPrimero(); // O(1)
+            despachado = heapTRedituable.Sacar(0); // O(log(T))
             idsDespachados[i] = (despachado.id()); // O(1)
-            cambiarRefes(tras_mutados,0); // O(log(T))
 
-            tras_mutados = heapTAntiguedad.sacar(despachado.refs().ObtenerSegundo()); // O(log(T))
-            tras_mutados.remove(0); // O(1)
-            cambiarRefes(tras_mutados,1); // O(log(T))
+            heapTAntiguedad.Sacar(despachado.handlerAnti().ref()); // O(log(T))
 
-            ciudadesPorId[despachado.origen()].object().incr_ganancia(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.origen()].ref(0), 0); // O(log(C))
-            cambiarRefes(ciu_mutados,0); // O(log(C))
+            ciudadesPorId[despachado.origen()].ObtenerPrimero().incr_ganancia(despachado.gananciaNeta()); // O(1)
+            heapCSuperavit.Reordenar(ciudadesPorId[despachado.origen()].ObtenerSegundo().ref(), true); // O(log(C))
 
-            ciudadesPorId[despachado.destino()].object().incr_perdida(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.destino()].ref(0), -1); // O(log(C))
-            cambiarRefes(ciu_mutados,0); // O(log(C))
+            ciudadesPorId[despachado.destino()].ObtenerPrimero().incr_perdida(despachado.gananciaNeta()); // O(1)
+            heapCSuperavit.Reordenar(ciudadesPorId[despachado.destino()].ObtenerSegundo().ref(), false); // O(log(C))
 
-            if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() < ciudadesPorId[despachado.origen()].object().ganancia() || mayorGanancia.get(0) == despachado.origen()){ // O(1)
-                mayorGanancia = new ArrayList<Integer>();   //O(1)
-                mayorGanancia.add(despachado.origen()); //O(1)
-            }else if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() == ciudadesPorId[despachado.origen()].object().ganancia()){
-                mayorGanancia.add(despachado.origen()); //O(1)
-            }
-
-            if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() < ciudadesPorId[despachado.destino()].object().perdida() || mayorPerdida.get(0) == despachado.destino()){
-                mayorPerdida = new ArrayList<Integer>(); //O(1)
-                mayorPerdida.add(despachado.destino()); //O(1)
-            }else if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() == ciudadesPorId[despachado.destino()].object().perdida()){
-                mayorPerdida.add(despachado.destino()); //O(1)
-            }
+            actualizarMaximos(despachado);
             
             sumaGanancias += despachado.gananciaNeta(); //O(1)
             trasladosDespachados++; //O(1)
@@ -159,44 +91,48 @@ public class BestEffort {
         return idsDespachados; 
     }
 
+    public void actualizarMaximos(Traslado despachado){
+        if (masProsperas.size() != 0) {
+            if(ciudadesPorId[masProsperas.get(0)].ObtenerPrimero().ganancia() < ciudadesPorId[despachado.origen()].ObtenerPrimero().ganancia() || masProsperas.get(0) == despachado.origen()){ // O(1)
+                masProsperas = new ArrayList<Integer>();   //O(1)
+                masProsperas.add(despachado.origen()); //O(1)
+            }else if(ciudadesPorId[masProsperas.get(0)].ObtenerPrimero().ganancia() == ciudadesPorId[despachado.origen()].ObtenerPrimero().ganancia()){
+                masProsperas.add(despachado.origen()); //O(1)
+            }
+        }else{
+            masProsperas.add(despachado.origen()); //O(1)
+        }
+
+        if (masDecadentes.size() != 0) {
+            if(ciudadesPorId[masDecadentes.get(0)].ObtenerPrimero().perdida() < ciudadesPorId[despachado.destino()].ObtenerPrimero().perdida() || masDecadentes.get(0) == despachado.destino()){
+                masDecadentes = new ArrayList<Integer>(); //O(1)
+                masDecadentes.add(despachado.destino()); //O(1)
+            }else if(ciudadesPorId[masDecadentes.get(0)].ObtenerPrimero().perdida() == ciudadesPorId[despachado.destino()].ObtenerPrimero().perdida()){
+                masDecadentes.add(despachado.destino()); //O(1)
+            }
+        }else{
+            masDecadentes.add(despachado.destino());
+        }
+    }
+
     public int[] despacharMasAntiguos(int n){   //COMPLEJIDAD DE LA FUNCION:
         int aDespachar = Math.min(n, heapTAntiguedad.tamaño()); //O(1)
         int[] idsDespachados = new int[aDespachar]; //O(1)
-        ArrayList<Tupla<Traslado,Integer>> tras_mutados;
-        ArrayList<Tupla<Ciudad,Integer>> ciu_mutados;
         Traslado despachado;
         for (int i = 0; i < aDespachar; i++) {
 
-            tras_mutados = heapTAntiguedad.sacar(0); // O(log(T))
-            despachado = tras_mutados.remove(0).ObtenerPrimero(); // O(1)
+            despachado = heapTAntiguedad.Sacar(0); // O(log(T))
             idsDespachados[i] = (despachado.id()); // O(1)
-            cambiarRefes(tras_mutados,1); // O(log(T))
 
-            tras_mutados = heapTRedituable.sacar(despachado.refs().ObtenerPrimero()); // O(log(T))
-            tras_mutados.remove(0); // O(1)
-            cambiarRefes(tras_mutados,0); // O(log(T))
+            heapTRedituable.Sacar(despachado.handlerRedi().ref()); // O(log(T))
 
-            ciudadesPorId[despachado.origen()].object().incr_ganancia(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.origen()].ref(0), 0); // O(log(C))
-            cambiarRefes(ciu_mutados,0); // O(log(C))
+            ciudadesPorId[despachado.origen()].ObtenerPrimero().incr_ganancia(despachado.gananciaNeta()); // O(1)
+            heapCSuperavit.Reordenar(ciudadesPorId[despachado.origen()].ObtenerSegundo().ref(), true); // O(log(C))
 
-            ciudadesPorId[despachado.destino()].object().incr_perdida(despachado.gananciaNeta()); // O(1)
-            ciu_mutados = heapCSuperavit.reordenar(ciudadesPorId[despachado.destino()].ref(0), -1); // O(log(C))
-            cambiarRefes(ciu_mutados,0); // O(log(C))
+            ciudadesPorId[despachado.destino()].ObtenerPrimero().incr_perdida(despachado.gananciaNeta()); // O(1)
+            heapCSuperavit.Reordenar(ciudadesPorId[despachado.destino()].ObtenerSegundo().ref(), false); // O(log(C))
 
-            if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() < ciudadesPorId[despachado.origen()].object().ganancia() || mayorGanancia.get(0) == despachado.origen()){ // O(1)
-                mayorGanancia = new ArrayList<Integer>();   //O(1)
-                mayorGanancia.add(despachado.origen());     //O(1)
-            }else if(ciudadesPorId[mayorGanancia.get(0)].object().ganancia() == ciudadesPorId[despachado.origen()].object().ganancia()){
-                mayorGanancia.add(despachado.origen());     //O(1)
-            }
-
-            if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() < ciudadesPorId[despachado.destino()].object().perdida() || mayorPerdida.get(0) == despachado.destino()){
-                mayorPerdida = new ArrayList<Integer>(); //O(1)
-                mayorPerdida.add(despachado.destino()); //O(1)
-            }else if(ciudadesPorId[mayorPerdida.get(0)].object().perdida() == ciudadesPorId[despachado.destino()].object().perdida()){
-                mayorPerdida.add(despachado.destino()); //O(1)
-            }
+            actualizarMaximos(despachado);
             
             sumaGanancias += despachado.gananciaNeta(); //O(1)
             trasladosDespachados++; //O(1)
@@ -209,11 +145,11 @@ public class BestEffort {
     }
 
     public ArrayList<Integer> ciudadesConMayorGanancia(){ //COMPLEJIDAD DE LA FUNCION: O(1)
-        return mayorGanancia;
+        return masProsperas;
     }
 
     public ArrayList<Integer> ciudadesConMayorPerdida(){   //COMPLEJIDAD DE LA FUNCION: O(1)
-        return mayorPerdida;
+        return masDecadentes;
     }
 
     public int gananciaPromedioPorTraslado(){   //COMPLEJIDAD DE LA FUNCION: O(1)
