@@ -59,7 +59,7 @@ public class BestEffort {
 
     public <T> BestEffort(int cantCiudades, Traslado[] traslados){  //COMPLEJIDAD DE LA FUNCION: O(n + m)
         crearCiudades(cantCiudades);// n
-        heapCSuperavit = new Heap<Ciudad>(ciudadesPorId, SuperavitComparator); //2
+        heapCSuperavit = new Heap<Ciudad>(ciudadesPorId, SuperavitComparador); //2
 
         Tupla<Traslado,Handler>[] trasladosR = new Tupla[traslados.length]; //3
         Tupla<Traslado,Handler>[] trasladosA = new Tupla[traslados.length]; //3
