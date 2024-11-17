@@ -13,6 +13,7 @@ public class HeapTests {
 
     Tupla<Ciudad,Handler>[] ciudades = new Tupla[13];
     Tupla<Ciudad,Handler>[] ciudades1 = new Tupla[15];
+    Tupla<Ciudad,Handler>[] ciudades2 = new Tupla[8];
     Comparator<Ciudad> superavitComparador;
 
     @BeforeEach
@@ -21,6 +22,7 @@ public class HeapTests {
         superavitComparador = Comparator.comparing(Ciudad::superavit);
         Integer[] ganancias = {10,29,40,17,33,59,53,51,81,79,98,97,99};
         Integer[] ganancias1 = {10,29,40,17,33,59,53,51,81,79,98,97,99,100,1};
+        Integer[] ganancias2 = {10,29,40,17,33,59,53,51};
 
         for (int i=0;i<ciudades.length;i++){
             Ciudad ciudadI = new Ciudad(i);
@@ -32,6 +34,12 @@ public class HeapTests {
             Ciudad ciudadI = new Ciudad(i);
             ciudades1[i] = new Tupla<Ciudad,Handler>(ciudadI, ciudadI.handler());
             ciudades1[i].ObtenerPrimero().incr_ganancia(ganancias1[i]);
+        }
+
+        for (int i=0;i<ciudades2.length;i++){
+            Ciudad ciudadI = new Ciudad(i);
+            ciudades2[i] = new Tupla<Ciudad,Handler>(ciudadI, ciudadI.handler());
+            ciudades2[i].ObtenerPrimero().incr_ganancia(ganancias2[i]);
         } 
     }
 
@@ -79,6 +87,25 @@ public class HeapTests {
 
         //nos fijamos que todos los nodos esten en las posiciones esperadas
         int[] posicionesEsperadas = new int[]{13,10,12,8,9,11,6,7,3,1,4,0,5,2,14};
+        int[] elems = new int[heap.tamaño()];
+        for (int i = 0; i < elems.length; i++) {
+            elems[i] = heap.elementos().get(i).id();
+        }
+        assertSetEquals(posicionesEsperadas, elems);
+    }
+
+    @Test
+    void uno_ultimo_nivel(){
+        Heap<Ciudad> heap = new Heap<Ciudad>(ciudades2,superavitComparador);
+        //me fijo que el tamaño y el maximo sean correctos
+        assertEquals(8,heap.tamaño());
+        Ciudad ciudadEsperada = new Ciudad(5);
+        ciudadEsperada.handler().set_ref(0);
+        ciudadEsperada.incr_ganancia(59);
+        assertEquals(ciudadEsperada, heap.maximo());
+
+        //nos fijamos que todos los nodos esten en las posiciones esperadas
+        int[] posicionesEsperadas = new int[]{5,7,6,1,4,2,0,3};
         int[] elems = new int[heap.tamaño()];
         for (int i = 0; i < elems.length; i++) {
             elems[i] = heap.elementos().get(i).id();
