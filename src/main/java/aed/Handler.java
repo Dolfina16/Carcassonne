@@ -14,4 +14,18 @@ public class Handler{
     public void set_ref(int new_ref){ //COMPLEJIDAD DE LA FUNCION: O(1)
         ref = new_ref;
     }
+
+    @Override
+    public boolean equals(Object otro) {
+        // Algunos chequeos burocraticos...
+        boolean otroEsNull = (otro == null);
+        boolean claseDistinta = otro.getClass() != this.getClass();
+        if (otroEsNull || claseDistinta) {
+            return false;
+        }
+        // casting -> cambiar el tipo
+        Handler otroHandler = (Handler) otro;
+        return ref == otroHandler.ref();
+        
+    }
 }

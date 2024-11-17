@@ -28,6 +28,10 @@ public T obtenerElem(int indice){     //COMPLEJIDAD DE LA FUNCION:  O(1)
     return elementos.get(indice).ObtenerPrimero();
 }
 
+public ArrayList<Tupla<T,Handler>> elementos(){
+    return elementos;
+}
+
 public int tamaño(){   //COMPLEJIDAD DE LA FUNCION: O(1)
     return tamaño;
 }
@@ -47,7 +51,7 @@ public void Heapify(){  // COMPLEJIDAD DE LA FUNCION: O(n). -- JUSTIFICAR LO DEL
 }
 
 public void Añadir(Tupla<T,Handler> elem){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
-    elementos.addLast(elem); //1
+    elementos.add(elem); //1
     tamaño++; //1
     if (tamaño>1) { //1
         SiftUp(tamaño-1); //log(n)
@@ -63,7 +67,7 @@ public T Sacar(int pos){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
         tamaño --; //1
     }else if( tamaño > 1){
         res = elementos.get(pos).ObtenerPrimero(); //3
-        elementos.set(pos, elementos.removeLast()); //2
+        elementos.set(pos, elementos.remove(tamaño-1)); //2
         tamaño --; //1
         SiftDown(pos); // log(n)
     // t1 = 4 + 6 + log(n) = 10 + log(n)
@@ -150,7 +154,6 @@ public String toString(){
     }  
     return res + "]";   
 }
-
 
 public static void main(String[] args) {
     Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
