@@ -14,7 +14,7 @@ public class BestEffort {
     private Heap<Traslado> heapTRedituable;
     private Heap<Traslado> heapTAntiguedad;
 
-    // n = |ciuadesPorId|, n = |heapCSuperavit|, m = |heapTRedituable|, m = |heapTAntiguedad|, j = |masProsperas|, k = |masDecadentes|
+    // n = |ciuadesPorId|, n = |heapCSuperavit|, m = |heapTRedituable|, m = |heapTAntiguedad|
 
     Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
     

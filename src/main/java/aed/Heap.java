@@ -36,7 +36,8 @@ public T maximo(){     //COMPLEJIDAD DE LA FUNCION: O(1)
     return elementos.get(0).ObtenerPrimero();    
 }
 
-public void Heapify(){  // COMPLEJIDAD DE LA FUNCION: O(n). -- JUSTIFICAR LO DEL ALGORITMO DE FLOY --
+public void Heapify(){  // COMPLEJIDAD DE LA FUNCION: O(n) --> La complejidad del algoritmo es O(n) debido a que utilizamos
+                        //                                      el algoritmo de Floyd
     int pos = (int)(Math.pow(2, log2(tamaño)))-2;
     if(tamaño>0){
         while (pos >= 0) {
