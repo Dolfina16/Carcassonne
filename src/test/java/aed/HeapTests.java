@@ -21,8 +21,8 @@ public class HeapTests {
         Integer[] ganancias = {10,29,40,17,33,59,53,51,81,79,98,97,99};
 
         for (int i=0;i<ciudades.length;i++){
-            Handler hand = new Handler(null);
-            ciudades[i] = new Tupla<Ciudad,Handler>(new Ciudad(i), hand);
+            Ciudad ciudadI = new Ciudad(i);
+            ciudades[i] = new Tupla<Ciudad,Handler>(ciudadI, ciudadI.handler());
             ciudades[i].ObtenerPrimero().incr_ganancia(ganancias[i]);
         }        
     }
@@ -33,6 +33,7 @@ public class HeapTests {
         //me fijo que el tamaño y el maximo sean correctos
         assertEquals(13,heap.tamaño());
         Ciudad ciudadEsperada = new Ciudad(12);
+        ciudadEsperada.handler().set_ref(0);
         ciudadEsperada.incr_ganancia(99);
         assertEquals(ciudadEsperada, heap.maximo());
 
@@ -49,10 +50,9 @@ public class HeapTests {
         Heap<Ciudad> heap = new Heap<Ciudad>(ciudades,superavitComparador);
         
         //agrego elemento 100,me fijo el tamaño, el máximo y que todos los elementos queden en las posiciones correctas
-        Handler handler100 = new Handler(null);
         Ciudad ciudad100 = new Ciudad(13);
         ciudad100.incr_ganancia(100);
-        Tupla<Ciudad,Handler> elemento100 = new Tupla<Ciudad,Handler>(ciudad100, handler100);
+        Tupla<Ciudad,Handler> elemento100 = new Tupla<Ciudad,Handler>(ciudad100, ciudad100.handler());
         heap.Añadir(elemento100);
 
         assertEquals(14, heap.tamaño());
@@ -75,6 +75,7 @@ public class HeapTests {
 
         heap.Reordenar(0, false);
         Ciudad maxNuevo = new Ciudad(10);
+        maxNuevo.handler().set_ref(0);
         maxNuevo.incr_ganancia(98);
 
         assertEquals(13, heap.tamaño());
@@ -94,6 +95,7 @@ public class HeapTests {
         //saco el maximo,me fijo el tamaño y el nuevo maximo
         heap.Sacar(0);
         Ciudad maxNuevo = new Ciudad(10);
+        maxNuevo.handler().set_ref(0);
         maxNuevo.incr_ganancia(98);
 
         assertEquals(12, heap.tamaño());
