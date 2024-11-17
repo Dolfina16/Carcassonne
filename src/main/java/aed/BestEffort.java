@@ -16,7 +16,18 @@ public class BestEffort {
 
     // n = |ciuadesPorId|, n = |heapCSuperavit|, m = |heapTRedituable|, m = |heapTAntiguedad|, j = |masProsperas|, k = |masDecadentes|
 
-    Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
+    // Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
+
+    public class SuperavitComparador implements Comparator<Ciudad>{
+        @Override
+        public int compare(Ciudad ciu1, Ciudad ciu2){     //COMPLEJIDAD DE LA FUNCION: O(1) 
+            if (Integer.compare(ciu1.superavit(),ciu2.superavit()) == 0) {
+                return Integer.compare(-ciu1.id(),-ciu2.id());
+            }
+            return Integer.compare(ciu1.superavit(),ciu2.superavit());
+        }
+    }
+    SuperavitComparador SuperavitComparador = new SuperavitComparador();
     
     public class RediComparador implements Comparator<Traslado>{
         @Override
