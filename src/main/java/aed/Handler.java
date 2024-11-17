@@ -1,6 +1,6 @@
 package aed;
 
-public class Handler{
+public class Handler{ //Objeto que guarda la posición de otro objeto dentro del heap correspondiente
     private Integer ref;
 
     public Handler(Integer r){  //COMPLEJIDAD DE LA FUNCION: O(1)

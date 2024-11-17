@@ -6,7 +6,7 @@ public class Ciudad {
     private int ganancia;
     private int perdida;
     private int superavit;
-    private Handler handler;
+    private Handler handler; // La posición de la ciudad dentro del heapCSuperavit.
     
     public Ciudad(int id){  //COMPLEJIDAD DE LA FUNCION: O(1)
         this.id = id;       //1
@@ -14,8 +14,7 @@ public class Ciudad {
         this.perdida = 0; //1
         this.superavit = 0; //1
         handler = new Handler(null);    //2 
-                                        //tF = 6 --> O(1)
-    }
+    }//tF = 6 --> O(1)
 
     public int id(){    //COMPLEJIDAD DE LA FUNCION: O(1)
         return id;
