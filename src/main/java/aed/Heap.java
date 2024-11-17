@@ -10,26 +10,29 @@ public class Heap <T> {
 
 // n = |elementos|
 
-public Heap(Tupla<T,Handler>[] arreglo, Comparator<T> comparador){   //COMPLEJIDAD DE LA FUNCION: O(n)
-                                                        // n = |arreglo|, |arreglo| va a ser igual a |elementos|
+public Heap(Tupla<T,Handler>[] arreglo, Comparator<T> comparador){   //COMPLEJIDAD DE LA FUNCION: O(n) * n = |arreglo| = |elementos| *                                
     elementos = new ArrayList<Tupla<T,Handler>>(); //2
     for (Tupla<T,Handler> t : arreglo) {       // 3, n iteraciones
         elementos.add(t); // 1                           
-        tamaño += 1;        // 1
-    }                       // t1 = 3 + n(2 + 3)
+        tamaño += 1;      // 1
+    }                     // t1 = 3 + n(2 + 3)
     this.comparador = comparador; // 1
-    for (int i = 0; i < elementos.size(); i++) { // 2, n iteraciones
+    for (int i = 0; i < elementos.size(); i++) {        // 2, n iteraciones
         elementos.get(i).ObtenerSegundo().set_ref(i);   //3
     }                                                   // t2 = 2 + n(2 + 3)
     Heapify();  //O(n)       tF = 3 + t1 + t2 = 3 + 3 + n*5 + 2 + n*5 = 8 + 10n  --> O(n)
 }
 
-public T obtenerElem(int indice){     //COMPLEJIDAD DE LA FUNCION:  O(1)
-    return elementos.get(indice).ObtenerPrimero();
+public ArrayList<T> elementos(){
+    ArrayList<T> res = new ArrayList<T>();
+    for (Tupla<T,Handler> t : elementos) {
+        res.add(t.ObtenerPrimero());
+    }
+    return res;
 }
 
-public ArrayList<Tupla<T,Handler>> elementos(){
-    return elementos;
+public T obtenerElem(int indice){     //COMPLEJIDAD DE LA FUNCION:  O(1)
+    return elementos.get(indice).ObtenerPrimero();
 }
 
 public int tamaño(){   //COMPLEJIDAD DE LA FUNCION: O(1)
@@ -40,10 +43,10 @@ public T maximo(){     //COMPLEJIDAD DE LA FUNCION: O(1)
     return elementos.get(0).ObtenerPrimero();    
 }
 
-public void Heapify(){  // COMPLEJIDAD DE LA FUNCION: O(n). -- JUSTIFICAR LO DEL ALGORITMO DE FLOY --
-    int pos = (int)(Math.pow(2, log2(tamaño)))-2;
+public void Heapify(){  // COMPLEJIDAD DE LA FUNCION: O(n). -- Algoritmo de Floyd --
+    int pos = (int)(Math.pow(2, log2(tamaño)))-2; // Setea la posición actual en la del ultimo nodo del penúltimo nivel. (2**(log(n)-1) - 2)
     if(tamaño>0){
-        while (pos >= 0) {
+        while (pos >= 0) { // Bucle que recorre todos los elementos por nivel de manera ascendente
             SiftDown(pos);
             pos-=1;
         }
@@ -51,7 +54,7 @@ public void Heapify(){  // COMPLEJIDAD DE LA FUNCION: O(n). -- JUSTIFICAR LO DEL
 }
 
 public void Añadir(Tupla<T,Handler> elem){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
-    elementos.add(elem); //1
+    elementos.addLast(elem); //1
     tamaño++; //1
     if (tamaño>1) { //1
         SiftUp(tamaño-1); //log(n)
@@ -67,7 +70,7 @@ public T Sacar(int pos){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
         tamaño --; //1
     }else if( tamaño > 1){
         res = elementos.get(pos).ObtenerPrimero(); //3
-        elementos.set(pos, elementos.remove(tamaño-1)); //2
+        elementos.set(pos, elementos.removeLast()); //2
         tamaño --; //1
         SiftDown(pos); // log(n)
     // t1 = 4 + 6 + log(n) = 10 + log(n)
@@ -143,17 +146,18 @@ public void SiftDown(int pos){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
     // t2 = 6 + t1 = 6 + 33 = 39 
     }
 }   // tF = 2 + t2 = 41 --> O(1)    Como se trata de una funcion recursiva, la cual en el peor de los casos
-//                                  hace log(n) llamados asi misma (longitud de una rama del heap pensado como arbol)
+//                                  hace log(n) llamados a si misma (longitud de una rama del heap pensado como arbol)
 //                                  entonces la complejidad es tF*log(n) = 41*log(n) --> O(log(n))
 
 
 public String toString(){   
     String res = "[";
-    for (Tupla<T,Handler> t : elementos) {     
-        res += t.ObtenerPrimero().toString() + ","; 
-    }  
-    return res + "]";   
+    for (int i = 0; i < elementos.size() - 1 ; i++) {     
+        res += elementos.get(i).ObtenerPrimero().toString() + ","; 
+    }
+    return res + elementos.get(tamaño-1) + "]";   
 }
+
 
 public static void main(String[] args) {
     Comparator<Ciudad> SuperavitComparator = Comparator.comparing(Ciudad::superavit);
