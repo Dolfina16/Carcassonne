@@ -7,8 +7,8 @@ public class Traslado {
     private int destino;
     private int gananciaNeta;
     private int timestamp;
-    private Handler handlerRedi;
-    private Handler handlerAnti;
+    private Handler handlerRedi; // La posición del traslado dentro del heapTRedituable
+    private Handler handlerAnti; // La posición del traslado dentro del heapTAntiguedad
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){ //COMPLEJIDAD DE LA FUNCION: O(1)
         this.id = id;
