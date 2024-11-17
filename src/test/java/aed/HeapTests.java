@@ -16,7 +16,7 @@ public class HeapTests {
 
     @BeforeEach
     void init(){
-        //Reiniciamos los valores de las ciudades y traslados antes de cada test
+        //Reiniciamos los valores de los elementos del heap a testear antes de cada test
         superavitComparador = Comparator.comparing(Ciudad::superavit);
         Integer[] ganancias = {10,29,40,17,33,59,53,51,81,79,98,97,99};
 
