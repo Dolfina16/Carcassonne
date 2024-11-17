@@ -53,6 +53,19 @@ public class BestEffortTestsPropios {
     }
     
     @Test
+    void despachar_sin_traslados(){
+        Traslado[] listaVacia = new Traslado[]{};
+
+        BestEffort sis = new BestEffort(this.cantCiudades, listaVacia);
+
+        int[] idsDespachados = sis.despacharMasAntiguos(4);
+
+        assertEquals(0, idsDespachados.length);
+        assertSetEquals(new ArrayList<>(Arrays.asList()), sis.ciudadesConMayorGanancia());
+        assertSetEquals(new ArrayList<>(Arrays.asList()), sis.ciudadesConMayorPerdida());
+    }
+
+    @Test
     void despachar_con_mas_despachos_que_traslados(){
         BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
 
