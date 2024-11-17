@@ -111,13 +111,13 @@ public void SiftUp(int pos){    //COMPLEJIDAD DE LA FUNCION: O(log(n))
         elementos.set(pos, padre);  // t=1
         elementos.set((pos-1)/2, hijo); // t=2
         padre.ObtenerSegundo().set_ref(pos); // t=2
-        SiftUp((pos-1)/2); // t=1
+        SiftUp((pos-1)/2); // t=3
     }else{
         hijo.ObtenerSegundo().set_ref(pos); // t=2
-    } // t  = 5 + 6 = 11
-    // tF = 5 + t = 16 , Como se trata de una funcion recursiva, la cual en el peor de los casos
+    } // t  = 5 + 8 = 13
+    // tF = 5 + t = 18 , Como se trata de una funcion recursiva, la cual en el peor de los casos
     //                   hace log(n) llamados asi misma (longitud de una rama del heap pensado como arbol)
-    //                   entonces la complejidad es tF*log(n) = 16*log(n) --> O(log(n))
+    //                   entonces la complejidad es tF*log(n) = 18*log(n) --> O(log(n))
 }
 
 public void SiftDown(int pos){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
@@ -142,9 +142,9 @@ public void SiftDown(int pos){ //COMPLEJIDAD DE LA FUNCION: O(log(n))
         t_padre.ObtenerSegundo().set_ref(pos); //2
     // t2 = 6
     }
-}   // tF = 2 + t2 = 41 --> O(1)    Como se trata de una funcion recursiva, la cual en el peor de los casos
+}   // tF = t1 = 33 --> O(1)    Como se trata de una funcion recursiva, la cual en el peor de los casos
 //                                  hace log(n) llamados a si misma (longitud de una rama del heap pensado como arbol)
-//                                  entonces la complejidad es tF*log(n) = 41*log(n) --> O(log(n))
+//                                  entonces la complejidad es tF*log(n) = 33*log(n) --> O(log(n))
 
 public String toString(){
     String res = "[";
