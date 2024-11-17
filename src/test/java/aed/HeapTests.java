@@ -27,6 +27,12 @@ public class HeapTests {
         }        
     }
 
+    void assertPosEsperadas(Heap<Ciudad> heap, int[] posEsperadas){
+        for (Tupla<Ciudad,Handler> elemento : heap.elementos()) {
+            assertEquals(posEsperadas[elemento.ObtenerPrimero().id()], elemento.ObtenerSegundo().ref());
+        }
+    }
+
     @Test
     void crear_heap(){
         Heap<Ciudad> heap = new Heap<Ciudad>(ciudades,superavitComparador);
@@ -39,10 +45,7 @@ public class HeapTests {
 
         //nos fijamos que todos los nodos esten en las posiciones esperadas
         int[] posicionesEsperadas = new int[]{12,9,11,8,10,5,6,7,3,4,1,2,0};
-        for (Tupla<Ciudad,Handler> elemento : heap.elementos()) {
-            assertEquals(posicionesEsperadas[elemento.ObtenerPrimero().id()], elemento.ObtenerSegundo().ref());
-        }
-    
+        assertPosEsperadas(heap, posicionesEsperadas);
     }
 
     @Test
@@ -60,11 +63,7 @@ public class HeapTests {
         
         //nos fijamos que todos los nodos esten en las posiciones esperadas
         int[] posicionesEsperadas = new int[]{12,9,11,8,10,5,13,7,3,4,1,6,2,0};
-        for (Tupla<Ciudad,Handler> elemento : heap.elementos()) {
-            assertEquals(posicionesEsperadas[elemento.ObtenerPrimero().id()], elemento.ObtenerSegundo().ref());
-        }
-
-
+        assertPosEsperadas(heap, posicionesEsperadas);
     }
     
     @Test
@@ -83,9 +82,7 @@ public class HeapTests {
 
         //nos fijamos que todos los nodos esten en las posiciones esperadas
         int[] posicionesEsperadas = new int[]{12,9,11,8,10,5,6,3,1,4,0,2,7};
-        for (Tupla<Ciudad,Handler> elemento : heap.elementos()) {
-            assertEquals(posicionesEsperadas[elemento.ObtenerPrimero().id()], elemento.ObtenerSegundo().ref());
-        }
+        assertPosEsperadas(heap, posicionesEsperadas);
     }
     
     @Test
@@ -103,9 +100,7 @@ public class HeapTests {
 
         //nos fijamos que todos los nodos esten en las posiciones esperadas
         int[] posicionesEsperadas = new int[]{7,9,11,8,10,5,6,3,1,4,0,2};
-        for (Tupla<Ciudad,Handler> elemento : heap.elementos()) {
-            assertEquals(posicionesEsperadas[elemento.ObtenerPrimero().id()], elemento.ObtenerSegundo().ref());
-        }
+        assertPosEsperadas(heap, posicionesEsperadas);
     }
 
 }
