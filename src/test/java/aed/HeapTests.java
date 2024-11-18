@@ -2,9 +2,14 @@ package aed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
+
+import aed.BestEffort.AntigComparador;
+
 import org.junit.jupiter.api.BeforeEach;
 
 public class HeapTests {
@@ -55,6 +60,15 @@ public class HeapTests {
                 if (e1 == e2) encontrado = true;
             }
             assertTrue(encontrado, "No se encontró el elemento " +  e1 + " en el arreglo " + s2.toString());
+        }
+    }
+
+    void assertSetEquals1(ArrayList<Integer> s1, ArrayList<Integer> s2) {
+        assertEquals(s1.size(), s2.size());
+        int i = 0;
+        while (i<s1.size()) {
+            assertTrue(s1.get(i) == s2.get(i), s1.get(i) + " es distinto a " + s2.get(i));
+            i++;
         }
     }
 
@@ -164,6 +178,38 @@ public class HeapTests {
         //nos fijamos que todos los nodos esten en las posiciones esperadas
         int[] posicionesEsperadas = new int[]{7,9,11,8,10,5,6,3,1,4,0,2};
         assertPosEsperadas(heap, posicionesEsperadas);
+    }
+
+    public class AntigComparador implements Comparator<Traslado>{
+        @Override
+        public int compare(Traslado tras1, Traslado tras2){  //COMPLEJIDAD DE LA FUNCION: O(1)
+            return Integer.compare(-tras1.timestamp(),-tras2.timestamp());
+        }
+    }
+
+    @Test
+    void stress(){
+        AntigComparador AntiguedadComparator = new AntigComparador();
+        Tupla<Traslado,Handler>[] traslados = new Tupla[31];
+        for (int i=traslados.length;i>0;i--){
+            Traslado trasladoI = new Traslado(traslados.length-i+1, 1, 2, 2, i);
+            traslados[31-i] = new Tupla<Traslado,Handler>(trasladoI, trasladoI.handlerAnti());
+        }
+
+        Heap<Traslado> heap = new Heap<Traslado>(traslados,AntiguedadComparator);
+
+        //me fijo que el tamaño y el maximo sean correctos
+        assertEquals(31,heap.tamaño());
+        Traslado TrasladoEsperada = new Traslado(31,1,2,2,1);
+        TrasladoEsperada.handlerAnti().set_ref(0);
+        assertEquals(TrasladoEsperada, heap.maximo());
+
+        //nos fijamos que todos los nodos esten en las posiciones esperadas
+        ArrayList<Integer> elems = new ArrayList<Integer>();
+        for (int i = 0; i < heap.tamaño(); i++) {
+            elems.add(heap.obtenerElem(i).timestamp());
+        }
+        assertSetEquals1(new ArrayList<>(Arrays.asList(1,9,2,13,10,5,3,15,14,11,21,7,6,4,17,16,24,28,23,12,22,27,30,8,20,26,19,31,18,25,29)), elems);
     }
 
 }

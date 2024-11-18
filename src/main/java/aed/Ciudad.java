@@ -61,13 +61,11 @@ public class Ciudad {
 
     @Override
     public boolean equals(Object otra) {
-        // Algunos chequeos burocraticos...
         boolean otroEsNull = (otra == null);
         boolean claseDistinta = otra.getClass() != this.getClass();
         if (otroEsNull || claseDistinta) {
             return false;
         }
-        // casting -> cambiar el tipo
         Ciudad otraCiudad = (Ciudad) otra;
         boolean res = id == otraCiudad.id && ganancia == otraCiudad.ganancia && perdida == otraCiudad.perdida && superavit == otraCiudad.superavit;
         res &= handler.equals(otraCiudad.handler());

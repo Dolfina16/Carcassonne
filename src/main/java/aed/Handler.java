@@ -1,6 +1,7 @@
 package aed;
 
-public class Handler{ //Objeto que guarda la posición de otro objeto dentro del heap correspondiente
+//Objeto que guarda la posición de otro objeto dentro del heap correspondiente
+public class Handler{ 
     private Integer ref;
 
     public Handler(Integer r){  //COMPLEJIDAD DE LA FUNCION: O(1)
@@ -17,15 +18,12 @@ public class Handler{ //Objeto que guarda la posición de otro objeto dentro del
 
     @Override
     public boolean equals(Object otro) {
-        // Algunos chequeos burocraticos...
         boolean otroEsNull = (otro == null);
         boolean claseDistinta = otro.getClass() != this.getClass();
         if (otroEsNull || claseDistinta) {
             return false;
         }
-        // casting -> cambiar el tipo
         Handler otroHandler = (Handler) otro;
         return ref == otroHandler.ref();
-        
     }
 }

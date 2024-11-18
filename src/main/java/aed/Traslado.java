@@ -49,4 +49,19 @@ public class Traslado {
     public Handler handlerAnti(){ //COMPLEJIDAD DE LA FUNCION: O(1)
         return handlerAnti;
     }
+
+    @Override
+    public boolean equals(Object otra) {
+        boolean otroEsNull = (otra == null);
+        boolean claseDistinta = otra.getClass() != this.getClass();
+        if (otroEsNull || claseDistinta) {
+            return false;
+        }
+        Traslado otroTraslado = (Traslado) otra;
+        boolean res = id == otroTraslado.id && origen == otroTraslado.origen && destino == otroTraslado.destino && gananciaNeta == otroTraslado.gananciaNeta && timestamp == otroTraslado.timestamp;
+        res &= handlerAnti.equals(otroTraslado.handlerAnti());
+        res &= handlerRedi.equals(otroTraslado.handlerRedi());
+        return res;
+    }
+
 }
